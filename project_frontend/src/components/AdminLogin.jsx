@@ -4,21 +4,25 @@ import { Paper, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
+
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState({ email: '', password: '' });
 
-  const handleAdminLogin = async () => {
-    try {
-      await axios.post('/api/admin/login', adminData);
-      navigate('/adminpage');
-    } catch (err) {
-      console.error(err);
-      alert('Admin login failed');
-    }
-  };
+  function handleAdminLogin() {
+    axios.post('http://localhost:3000/admin/login', adminData)
+      .then((res) => {
+        alert(res.data.message);
+        navigate('/admindashboard');
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('Admin login failed');
+      });
+  }
+  
 
   return (
     <Box
@@ -51,7 +55,7 @@ const AdminLogin = () => {
           }}
           sx={{
             p: 4,
-            width: '100%',
+            width: { xs: '80%', sm: '60%', md: '100%' },
             maxWidth: 400,
             border: '2px solid rgb(184, 12, 214)',
             backgroundColor:'ButtonHighlight', // light purple
@@ -66,7 +70,6 @@ const AdminLogin = () => {
             label="Email"
             fullWidth
             margin="normal"
-            value={adminData.email}
             onChange={(e) => setAdminData({ ...adminData, email: e.target.value })}
           />
 
@@ -75,7 +78,6 @@ const AdminLogin = () => {
             type="password"
             fullWidth
             margin="normal"
-            value={adminData.password}
             onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
           />
 

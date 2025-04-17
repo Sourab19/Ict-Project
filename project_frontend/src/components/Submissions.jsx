@@ -25,7 +25,7 @@ import {
   ListItemText
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const initialData = [
   {
@@ -52,6 +52,7 @@ const Submissions = () => {
   const [submissions, setSubmissions] = useState(initialData);
   const [filterBatch, setFilterBatch] = useState("");
   const [filterTopic, setFilterTopic] = useState("");
+  const navigate=useNavigate();
 
   const handleInputChange = (id, field, value) => {
     setSubmissions(prev =>
@@ -67,6 +68,7 @@ const Submissions = () => {
 
   const handleLogout = () => {
     console.log('Logging out...');
+    navigate('/');
   };
 
   const filteredSubmissions = submissions.filter(sub => {

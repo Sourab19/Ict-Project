@@ -12,6 +12,7 @@ const MentorDashboard = () => {
 
   const handleLogout = () => {
     console.log('Logging out...');
+    navigate('/');
   };
 
   const handleViewClick = () => {

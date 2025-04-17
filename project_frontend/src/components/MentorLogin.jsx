@@ -5,22 +5,26 @@ import { Paper, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
+
 
 
 const MentorLogin = () => {
   const navigate = useNavigate();
   const [mentorData, setMentorData] = useState({ email: '', password: '' });
 
-  const handleMentorLogin = async () => {
-    try {
-      await axios.post('/api/mentor/login', mentorData);
-      navigate('/mentorpage');
-    } catch (err) {
-      console.error(err);
-      alert('Mentor login failed');
-    }
-  };
+  function handleMentorLogin() {
+    axios.post('http://localhost:3000/mentor/login', mentorData)
+      .then((res) => {
+        alert(res.data.message);
+        navigate('/mentordashboard');
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('Mentor login failed');
+      });
+  }
+  
 
   return (
     <Box
@@ -48,7 +52,7 @@ const MentorLogin = () => {
             }}
             sx={{
               p: 4,
-              width: '100%',
+              width: { xs: '80%', sm: '60%', md: '100%' },
               maxWidth: 400,
               border: '2px solid rgb(12, 46, 214)',
               backgroundColor:'whitesmoke',
@@ -62,7 +66,6 @@ const MentorLogin = () => {
         label="Email"
         fullWidth
         margin="normal"
-        value={mentorData.email}
         onChange={(e) => setMentorData({ ...mentorData, email: e.target.value })}
       />
       <TextField
@@ -70,7 +73,6 @@ const MentorLogin = () => {
         type="password"
         fullWidth
         margin="normal"
-        value={mentorData.password}
         onChange={(e) => setMentorData({ ...mentorData, password: e.target.value })}
       />
       <Button

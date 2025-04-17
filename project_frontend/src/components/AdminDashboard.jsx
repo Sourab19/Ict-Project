@@ -2,14 +2,17 @@ import React from 'react';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [mentors, setMentors] = React.useState([]);
+  const navigate=useNavigate();
 
   const handleLogout = () => {
     // Add logout functionality
     console.log('Logging out...');
+    navigate('/');
+
   };
 
   return (

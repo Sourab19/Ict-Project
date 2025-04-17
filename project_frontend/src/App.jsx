@@ -14,6 +14,7 @@ function App() {
   
 
   return (
+    <>
     <Routes>
       <Route path="/admindashboard" element={<AdminDashboard />} />
       <Route path="/mentordashboard" element={<MentorDashboard />} />
@@ -23,6 +24,7 @@ function App() {
       <Route path="/ref" element={<RefMaterials/>} />
       <Route path="/" element={<LoginPage/>}/>
     </Routes>
+    </>
   )
 }
 
