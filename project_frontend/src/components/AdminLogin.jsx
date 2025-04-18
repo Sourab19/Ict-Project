@@ -12,14 +12,23 @@ const AdminLogin = () => {
   const [adminData, setAdminData] = useState({ email: '', password: '' });
 
   function handleAdminLogin() {
+    if (!adminData.email || !adminData.password) {
+      alert("Please enter both email and password.");
+      return;
+    }
     axios.post('http://localhost:3000/admin/login', adminData)
       .then((res) => {
         alert(res.data.message);
         navigate('/admindashboard');
       })
       .catch((err) => {
+        if (err.response.data.message) {
+          alert(err.response.data.message); 
+        } else {
+          alert('Admin login failed');
+        }
         console.error(err);
-        alert('Admin login failed');
+        
       });
   }
   

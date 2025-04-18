@@ -10,12 +10,12 @@ router.post('/login', async (req, res) => {
   try {
     const admin = await adminModel.findOne({ email: req.body.email });
     if (!admin) {
-      res.status(404).send("Admin not found");
+      res.status(404).send({message:'Invalid email'});
     } else {
       if (admin.password == req.body.password) {
         res.status(200).send({message:'Admin Login Successful'})
       } else {
-        res.status(404).send({message:'Invalid credentials'});
+        res.status(404).send({message:'Invalid password'});
       }
     }
   } catch (error) {

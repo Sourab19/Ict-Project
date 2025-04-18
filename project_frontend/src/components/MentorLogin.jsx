@@ -14,14 +14,22 @@ const MentorLogin = () => {
   const [mentorData, setMentorData] = useState({ email: '', password: '' });
 
   function handleMentorLogin() {
+    if (!mentorData.email || !mentorData.password) {
+      alert("Please enter both email and password.");
+      return;
+    }
     axios.post('http://localhost:3000/mentor/login', mentorData)
       .then((res) => {
         alert(res.data.message);
         navigate('/mentordashboard');
       })
       .catch((err) => {
+        if (err.response.data.message) {
+          alert(err.response.data.message); 
+        } else {
+          alert('Mentor login failed');
+        }
         console.error(err);
-        alert('Mentor login failed');
       });
   }
   

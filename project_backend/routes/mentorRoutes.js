@@ -10,12 +10,12 @@ router.post('/login', async (req, res) => {
   try {
     const mentor = await mentorModel.findOne({ email: req.body.email });
     if (!mentor) {
-      res.status(404).send("Mentor not found");
+      res.status(404).send({message:'Invalid email'});
     } else {
       if (mentor.password == req.body.password) {
         res.status(200).send({message:'Mentor Login Successful'})
       } else {
-        res.status(404).send({message:'Invalid credentials'});
+        res.status(404).send({message:'Invalid password'});
       }
     }
   } catch (error) {
