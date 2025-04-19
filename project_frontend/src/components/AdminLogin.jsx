@@ -50,7 +50,7 @@ const AdminLogin = () => {
           style={{ marginBottom: '7%', fontFamily: 'serif' }}
           color="darkblue"
         >
-          Are U an AdMiN?
+          Are U an Admin?
         </Typography>
 
         <MotionPaper

@@ -28,7 +28,7 @@ const MentorDashboard = () => {
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
-            backgroundColor: 'black',
+            backgroundColor: '#2565AE',
             color: 'white',
           },
         }}
@@ -51,7 +51,7 @@ const MentorDashboard = () => {
       </Drawer>
 
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '64px', width: '100%' }}>
-        <AppBar position="fixed" sx={{ backgroundColor: 'black' }}>
+        <AppBar position="fixed" sx={{ backgroundColor: '#2565AE' }}>
           <Toolbar>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               MENTOR DASHBOARD

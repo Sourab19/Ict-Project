@@ -88,7 +88,7 @@ const Submissions = () => {
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
-            backgroundColor: 'black',
+            backgroundColor: '#2565AE',
             color: 'white',
           },
         }}
@@ -113,7 +113,7 @@ const Submissions = () => {
       {/* Main content */}
       <Box sx={{ flexGrow: 1, bgcolor: 'white', minHeight: '100vh' }}>
         {/* Top AppBar */}
-        <AppBar position="fixed" sx={{ backgroundColor: 'black', zIndex: 1201 }}>
+        <AppBar position="fixed" sx={{ backgroundColor: '#2565AE', zIndex: 1201 }}>
           <Toolbar>
           
             <AccountCircleIcon sx={{ fontSize: 40,paddingLeft:8,paddingTop:3 }} />

@@ -46,7 +46,7 @@ const MentorLogin = () => {
       >
         <Box textAlign="center">
           <Typography variant="h3" gutterBottom style={{marginBottom:'7%',fontFamily:'serif'}} color='darkblue'>
-            Are  U  a MeNtoR?
+            Are  U  a Mentor?
           </Typography>
        
          <MotionPaper
