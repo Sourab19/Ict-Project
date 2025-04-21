@@ -8,18 +8,29 @@ router.use(express.urlencoded({ extended: true }));
 const mentorModel = require("../model/mentorData");
 router.post('/login', async (req, res) => {
   try {
-    const mentor = await mentorModel.findOne({ email: req.body.email });
+    const { email, password, role } = req.body;
+
+
+    const mentor = await mentorModel.findOne({ email, role });
+
+
     if (!mentor) {
-      res.status(404).send({message:'Invalid email'});
+      return res.status(404).send({ message: `Invalid email or Invalid user role` });
+    }
+
+    if (mentor.password !== password) {
+      return res.status(404).send({ message: 'Invalid password' });
+    }
+
+    if (role === 'admin') {
+      return res.status(200).send({ message: 'Admin Login Successful' });
+    } else if (role === 'mentor') {
+      return res.status(200).send({ message: 'Mentor Login Successful' });
     } else {
-      if (mentor.password == req.body.password) {
-        res.status(200).send({message:'Mentor Login Successful'})
-      } else {
-        res.status(404).send({message:'Invalid password'});
-      }
+      return res.status(400).send({ message: 'Invalid role' });
     }
   } catch (error) {
-    res.status(404).send("Error");
+    res.status(500).send({ message: 'Error' });
   }
 
 

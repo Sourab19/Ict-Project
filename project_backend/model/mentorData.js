@@ -5,6 +5,7 @@ const mentorSchema = mongoose.Schema({
   number: Number,
   password: String,
   projects: Array,
+  role:String,
 });
 
 const mentorData = mongoose.model("mentor", mentorSchema);
