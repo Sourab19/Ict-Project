@@ -12,17 +12,44 @@ import {
   Container
 } from '@mui/material';
 
-import logo from './logo.jpg'; 
-import img from './img.png';
+import logo from '../images/logo.jpg'; 
+import img from '../images/img.png';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [role, setRole] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate=useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(`Logging in as ${role} with email: ${email}`);
+
+    if (!email || !password || !role) {
+      alert("Please enter both email and password");
+      return;
+    }
+
+    const loginData = { email, password, role };
+
+    axios.post('http://localhost:3000/mentor/login', loginData)
+      .then((res) => {
+        alert(res.data.message);
+        if (role === 'admin') {
+          navigate('/admindashboard');
+        } else if (role === 'mentor') {
+          navigate('/mentordashboard');
+        }
+      })
+      .catch((err) => {
+        if (err.response?.data?.message) {
+          alert(err.response.data.message);
+        } else {
+          alert('Login failed');
+        }
+        console.error(err);
+      });
   };
 
   return (
