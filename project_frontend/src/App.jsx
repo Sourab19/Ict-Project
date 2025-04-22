@@ -9,6 +9,8 @@ import Projects from './components/Projects';
 import Mentors from './components/Mentors';
 import Submissions from './components/Submissions';
 import LoginPage from './components/LoginPage';
+import AddMentor from './components/AddMentor';
+import AddProject from './components/AddProject';
 
 function App() {
   
@@ -22,6 +24,8 @@ function App() {
       <Route path="/submissions" element={<Submissions />} />
       <Route path="/mentors" element={<Mentors/>} />
       <Route path="/ref" element={<RefMaterials/>} />
+      <Route path="/addmentor" element={<AddMentor />} />
+      <Route path="/addproject" element={<AddProject />} />
       <Route path="/" element={<LoginPage/>}/>
     </Routes>
     </>
