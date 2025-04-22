@@ -47,14 +47,14 @@ router.post("/", upload.single("srsFile"), async (req, res) => {
 
 // // @route   GET /api/projects/unassigned
 // // @desc    Get only unassigned projects
-// router.get("/unassigned", async (req, res) => {
-//   try {
-//     const unassigned = await Project.find({ assigned: false });
-//     res.json(unassigned);
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to fetch unassigned projects" });
-//   }
-// });
+router.get("/unassigned", async (req, res) => {
+  try {
+    const unassigned = await Project.find({ assigned: false });
+    res.json(unassigned);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch unassigned projects" });
+  }
+});
 
 // // @route   PUT /api/projects/:id/assign
 // // @desc    Mark a project as assigned

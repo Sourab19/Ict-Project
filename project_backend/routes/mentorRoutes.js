@@ -36,4 +36,25 @@ router.post('/login', async (req, res) => {
 
 });
 
+router.post('/add', async (req, res) => {
+  try {
+    const { name, email, number, password, projects } = req.body;
+
+    const newMentor = new mentorModel({
+      name,
+      email,
+      number,
+      password,
+      projects,
+    });
+
+    const savedMentor = await newMentor.save();
+    res.status(201).json(savedMentor);
+  } catch (error) {
+    console.error("Error adding mentor:", error);
+    res.status(500).json({ message: "Error adding mentor", error });
+  }
+});
+
+
 module.exports = router;

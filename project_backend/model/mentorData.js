@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
-const mentorSchema = mongoose.Schema({
+
+const mentorSchema = new mongoose.Schema({
   name: String,
   email: String,
   number: Number,
   password: String,
-  projects: Array,
-  role:String,
+  
+  // Reference to project(s)
+  projects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "project", 
+  }],
+  role: {
+    type: String,
+    default: "mentor",
+  },
 });
 
 const mentorData = mongoose.model("mentor", mentorSchema);
