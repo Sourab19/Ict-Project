@@ -56,6 +56,13 @@ const AddMentor = () => {
         mentorData
       );
       console.log("Mentor added:", res.data);
+      await Promise.all(
+        projects.map((projectId) =>
+          axios.patch(`http://localhost:3000/project/update/${projectId}`, {
+            assigned: true,
+          })
+        )
+      );
       alert("Added Mentor successfully");
       navigate("/admindashboard");
     } catch (err) {
