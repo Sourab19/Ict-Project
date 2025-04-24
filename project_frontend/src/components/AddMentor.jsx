@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   Box,
   Button,
@@ -9,10 +10,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+=======
+import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
 import React, { useEffect, useState } from "react";
 import logo from "../images/logo.jpg";
 import mentor from "../images/mentor.jpg"; // Make sure this image exists
 import axios from "axios";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 
 const AddMentor = () => {
@@ -22,20 +27,56 @@ const AddMentor = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [projects, setProjects] = useState([]);
+=======
+import { useNavigate, useLocation } from "react-router-dom";
+
+const AddMentor = () => {
+  const location = useLocation();
+  const mentorToEdit = location.state?.mentor;  // Rename to avoid name conflict
+
+  const [name, setName] = useState(mentorToEdit ? mentorToEdit.name : "");
+  const [email, setEmail] = useState(mentorToEdit ? mentorToEdit.email : "");
+  const [phone, setPhone] = useState(mentorToEdit ? mentorToEdit.number : "");
+  const [password, setPassword] = useState(""); // Not pre-filled
+  const [projects, setProjects] = useState(
+    mentorToEdit ? mentorToEdit.projects.map(p => p._id) : []
+  );
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
   const [availableProjects, setAvailableProjects] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+<<<<<<< HEAD
         const response = await axios.get(
           "http://localhost:3000/project/unassigned"
         );
         setAvailableProjects(response.data);
+=======
+        const res = await axios.get("http://localhost:3000/project/unassigned");
+  
+        let allProjects = res.data;
+  
+        if (mentorToEdit) {
+          const alreadyAssigned = mentorToEdit.projects;
+  
+          // Merge and remove duplicates based on _id
+          const combined = [...res.data, ...alreadyAssigned];
+          const uniqueProjects = Array.from(
+            new Map(combined.map((p) => [p._id, p])).values()
+          );
+  
+          allProjects = uniqueProjects;
+        }
+  
+        setAvailableProjects(allProjects);
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
       } catch (err) {
         console.error("Failed to fetch projects", err);
       }
     };
+<<<<<<< HEAD
 
     fetchProjects();
   }, []);
@@ -43,10 +84,22 @@ const AddMentor = () => {
     e.preventDefault();
 
     const mentorData = {
+=======
+  
+    fetchProjects();
+  }, [mentorToEdit]);
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = {
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
       name,
       email,
       number: phone,
       password,
+<<<<<<< HEAD
       projects, // contains project IDs
     };
 
@@ -67,6 +120,23 @@ const AddMentor = () => {
       navigate("/admindashboard");
     } catch (err) {
       console.error("Failed to add mentor", err);
+=======
+      projects, // this should be array of _ids
+    };
+
+    try {
+      if (mentorToEdit?._id) {
+        await axios.put(`http://localhost:3000/mentor/update/${mentorToEdit._id}`, formData);
+        alert("Mentor updated successfully");
+      } else {
+        await axios.post("http://localhost:3000/mentor/add", formData);
+        alert("Added Mentor successfully");
+      }
+
+      navigate("/mentors");
+    } catch (err) {
+      console.error("Failed to add or update mentor", err);
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
     }
   };
 
@@ -106,7 +176,11 @@ const AddMentor = () => {
               style={{ width: "100px", marginBottom: 10 }}
             />
             <Typography variant="h4" sx={{ color: "text.secondary" }}>
+<<<<<<< HEAD
               Mentor SignUp
+=======
+              {mentorToEdit ? "Edit Mentor" : "Add Mentor"}
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
             </Typography>
           </Box>
 
@@ -144,16 +218,25 @@ const AddMentor = () => {
               variant="outlined"
               value={password}
               fullWidth
+<<<<<<< HEAD
               required
               type="password"
               onChange={(e) => setPassword(e.target.value)}
             />
+=======
+              required={!mentorToEdit} // Required only while adding
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
             <FormControl fullWidth required>
               <InputLabel id="project-select-label">Select Projects</InputLabel>
               <Select
                 labelId="project-select-label"
                 id="project-select"
                 multiple
+<<<<<<< HEAD
                 value={Array.isArray(projects) ? projects : []}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -161,6 +244,12 @@ const AddMentor = () => {
                   setProjects(
                     typeof value === "string" ? value.split(",") : value
                   );
+=======
+                value={projects}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setProjects(typeof value === "string" ? value.split(",") : value);
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
                 }}
                 renderValue={(selected) => {
                   return availableProjects
@@ -192,7 +281,11 @@ const AddMentor = () => {
                 },
               }}
             >
+<<<<<<< HEAD
               Submit
+=======
+              {mentorToEdit ? "Update" : "Submit"}
+>>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
             </Button>
           </Box>
 
