@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import React from 'react'
-
-const Mentors = () => {
-  return (
-    <div>
-      Mentors
-      
-    </div>
-  )
-}
-
-export default Mentors
-=======
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -264,4 +250,3 @@ const Mentors = () => {
 };
 
 export default Mentors;
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef

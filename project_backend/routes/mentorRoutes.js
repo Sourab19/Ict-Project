@@ -3,29 +3,20 @@ const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
 
-
-const mentorModel = require("../model/mentorData");
-=======
 const mentorModel = require("../model/mentorData");
 const Project = require("../model/projectData"); 
 
 // Login
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
+
 router.post('/login', async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
-<<<<<<< HEAD
 
     const mentor = await mentorModel.findOne({ email, role });
 
 
-=======
-    const mentor = await mentorModel.findOne({ email, role });
-
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
     if (!mentor) {
       return res.status(404).send({ message: `Invalid email or Invalid user role` });
     }
@@ -44,16 +35,11 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: 'Error' });
   }
-<<<<<<< HEAD
 
-
-});
-
-=======
 });
 
 // Add mentor
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
+
 router.post('/add', async (req, res) => {
   try {
     const { name, email, number, password, projects } = req.body;
@@ -64,10 +50,9 @@ router.post('/add', async (req, res) => {
       number,
       password,
       projects,
-<<<<<<< HEAD
-=======
+
       role: "mentor"
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
+
     });
 
     const savedMentor = await newMentor.save();
@@ -78,8 +63,7 @@ router.post('/add', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
+
 // Get all mentors
 router.get("/", async (req, res) => {
   try {
@@ -134,6 +118,6 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete mentor" });
   }
 });
->>>>>>> b7b36e2e2b8513be62923a6c3cd40746d73c5cef
+
 
 module.exports = router;
