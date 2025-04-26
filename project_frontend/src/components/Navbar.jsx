@@ -16,8 +16,8 @@ const Navbar = () => {
             alt="ICT Logo"
             style={{ width: 50, height: 50, marginRight: 10 }}
           />
-          <Typography variant="h6" component="div" sx={{ fontWeight: "bold"}} color="black" style={{fontFamily:'monospace'}}>
-            ICT_Intern
+          <Typography variant="h6" component="div" sx={{ fontWeight: "bold"}} color="black" >
+            Internship Portal -Admin
           </Typography>
         </Box>
 

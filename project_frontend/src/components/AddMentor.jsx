@@ -16,6 +16,7 @@ import mentor from "../images/mentor.jpg"; // Make sure this image exists
 import axios from "axios";
 
 import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const AddMentor = () => {
   const location = useLocation();
@@ -91,6 +92,8 @@ const AddMentor = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <Box
       sx={{
         display: "flex",
@@ -245,6 +248,7 @@ const AddMentor = () => {
         />
       </Box>
     </Box>
+    </>
   );
 };
 

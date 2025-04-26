@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import home1 from "../images/home1.webp"; // Section 1
 import home2 from "../images/home2.webp"; // Section 2
 import home3 from "../images/home3.webp"; // New image for Section 3
+import AdminCarousel from "./AdminCarousel";
+import Navbar from "./Navbar";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -21,6 +23,8 @@ const AdminDashboard = () => {
 
   return (
     <>
+    <Navbar />
+    <AdminCarousel />
       {/* Section 1: Welcome */}
       <Box sx={{ backgroundColor: "white", color: "black", py: 6, height: { xs: 'auto', sm: '900px', md: '800px' },fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }}}>
         <Container>
@@ -113,12 +117,8 @@ const AdminDashboard = () => {
         </Container>
       </Box>
 
-      {/* Footer */}
-      <Box sx={{ backgroundColor: "#474b52", color: "white", py: 3, textAlign: "center" }}>
-        <Typography variant="body2">
-          &copy; 2025 KTU Dashboard. All rights reserved.
-        </Typography>
-      </Box>
+
+     
     </>
 
   );

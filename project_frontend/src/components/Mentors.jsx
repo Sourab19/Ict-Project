@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { Email, Phone, Assignment } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import Navbar from "./Navbar";
 
 const Mentors = () => {
   const [mentors, setMentors] = useState([]);
@@ -65,6 +66,8 @@ const Mentors = () => {
   
 
   return (
+    <>
+    <Navbar />
     <Box
     display="flex"
     flexDirection="column"
@@ -231,21 +234,9 @@ const Mentors = () => {
         </Box>
       )}
       </Box>
-      <Box
-  component="footer"
-  sx={{
-    mt: 4,
-    py: 2,
-    textAlign: "center",
-    backgroundColor: "#f5f5f5",
-    borderTop: "1px solid #e0e0e0",
-  }}
->
-  <Typography variant="body2" color="textSecondary">
-    © 2025 Internship Portal by ICT
-  </Typography>
-</Box>
+     
     </Box>
+    </>
   );
 };
 

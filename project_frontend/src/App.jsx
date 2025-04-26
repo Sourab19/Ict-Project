@@ -1,17 +1,17 @@
-
 import { Routes, Route, useLocation } from "react-router-dom";
-import Navbar from './components/Navbar';
 
-import Mentors from './components/Mentors';
-import Submissions from './components/Submissions';
-import LoginPage from './components/LoginPage';
-import AddMentor from './components/AddMentor';
-import AddProject from './components/AddProject';
+import Mentors from "./components/Mentors";
+import Submissions from "./components/Submissions";
+import LoginPage from "./components/LoginPage";
+import AddMentor from "./components/AddMentor";
+import AddProject from "./components/AddProject";
 
-import Projects from './components/Projects';
-import AdminDashboard from './components/AdminDashboard';
-import MentorDashboard from './components/MentorDashboard';
-import RefMaterials from './components/RefMaterials';
+import Projects from "./components/Projects";
+import AdminDashboard from "./components/AdminDashboard";
+import MentorDashboard from "./components/MentorDashboard";
+import RefMaterials from "./components/RefMaterials";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Footer from "./components/Footer";
 
 function App() {
   const location = useLocation();
@@ -19,8 +19,8 @@ function App() {
 
   return (
     <>
-      {!hideNavbarOn.includes(location.pathname) && <Navbar />}
-      
+     
+
       <Routes>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/mentordashboard" element={<MentorDashboard />} />
@@ -30,11 +30,12 @@ function App() {
         <Route path="/ref" element={<RefMaterials />} />
         <Route path="/addmentor" element={<AddMentor />} />
         <Route path="/addproject" element={<AddProject />} />
+       
         <Route path="/" element={<LoginPage />} />
       </Routes>
+      {!hideNavbarOn.includes(location.pathname) && <Footer />}
     </>
   );
 }
 
 export default App;
-

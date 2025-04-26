@@ -34,16 +34,14 @@ router.post("/", upload.single("srsFile"), async (req, res) => {
   }
 });
 
-// // @route   GET /api/projects
-// // @desc    Get all projects
-// router.get("/", async (req, res) => {
-//   try {
-//     const projects = await Project.find();
-//     res.json(projects);
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to fetch projects" });
-//   }
-// });
+router.get("/get", async (req, res) => {
+  try {
+    const projects = await Project.find();
+    res.json(projects);
+ } catch (err) {
+   res.status(500).json({ error: "Failed to fetch projects" });
+  } });
+
 
 
 //    Get only unassigned projects
@@ -61,6 +59,50 @@ router.patch("/update/:id", async (req, res) => {
   await Project.findByIdAndUpdate(req.params.id, { assigned: true });
   res.send("Updated");
 });
+
+router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
+  try {
+    const { projectName, projectDescription } = req.body;
+
+    const updatedData = {
+      projectName,
+      projectDescription,
+    };
+
+    if (req.file) {
+      updatedData.srsFile = req.file.path;
+    }
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    res.json(updatedProject);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update project", details: err });
+  }
+});
+
+
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const deleted = await Project.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    res.json({ message: "Project deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete project", details: err });
+  }
+});
+
 
 
 // // @route   PUT /api/projects/:id/assign
