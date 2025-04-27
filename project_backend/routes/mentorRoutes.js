@@ -11,32 +11,31 @@ const Project = require("../model/projectData");
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
 
-
-    const mentor = await mentorModel.findOne({ email, role });
-
+    // Find the mentor by email (no need to send role)
+    const mentor = await mentorModel.findOne({ email });
 
     if (!mentor) {
-      return res.status(404).send({ message: `Invalid email or Invalid user role` });
+      return res.status(404).send({ message: 'Invalid email' });
     }
 
+    // Check if the password matches
     if (mentor.password !== password) {
       return res.status(404).send({ message: 'Invalid password' });
     }
 
-    if (role === 'admin') {
-      return res.status(200).send({ message: 'Admin Login Successful' });
-    } else if (role === 'mentor') {
-      return res.status(200).send({ message: 'Mentor Login Successful' });
-    } else {
-      return res.status(400).send({ message: 'Invalid role' });
-    }
+    // Send the role along with the login success message
+    return res.status(200).send({
+      message: `${mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)} Login Successful`,
+      role: mentor.role, // Send the role in the response
+    });
+
   } catch (error) {
     res.status(500).send({ message: 'Error' });
   }
-
 });
+
 
 // Add mentor
 

@@ -2,34 +2,35 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const Project = require("../model/projectData");
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
-// Storage config for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure this folder exists
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    cb(null, `${timestamp}-${file.originalname}`);
-  },
-});
 
-const upload = multer({ storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 
 
 router.post("/", upload.single("srsFile"), async (req, res) => {
   try {
     const { projectName, projectDescription } = req.body;
+    let uploadedFileUrl = null;
+
+    if (req.file) {
+      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
+      uploadedFileUrl = cloudinaryResponse.secure_url;
+    }
 
     const newProject = new Project({
       projectName,
       projectDescription,
-      srsFile: req.file?.path || null,
+      srsFile: uploadedFileUrl,
     });
 
     await newProject.save();
     res.status(201).json(newProject);
+
   } catch (err) {
+    console.error("Error creating project:", err);
     res.status(500).json({ error: "Error creating project", details: err });
   }
 });
@@ -70,7 +71,8 @@ router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.srsFile = req.file.path;
+      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
+      updatedData.srsFile = cloudinaryResponse.secure_url;
     }
 
     const updatedProject = await Project.findByIdAndUpdate(
@@ -85,6 +87,7 @@ router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
 
     res.json(updatedProject);
   } catch (err) {
+    console.error("Error updating project:", err);
     res.status(500).json({ error: "Failed to update project", details: err });
   }
 });

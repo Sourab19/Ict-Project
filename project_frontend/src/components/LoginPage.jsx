@@ -26,16 +26,17 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (!email || !password || !role) {
+    if (!email || !password ) {
       alert("Please enter both email and password");
       return;
     }
 
-    const loginData = { email, password, role };
+    const loginData = { email, password };
 
     axios.post('http://localhost:3000/mentor/login', loginData)
       .then((res) => {
         alert(res.data.message);
+        const { role } = res.data;
         if (role === 'admin') {
           navigate('/admindashboard');
         } else if (role === 'mentor') {
@@ -128,7 +129,7 @@ const LoginPage = () => {
             onSubmit={handleLogin}
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
-            <FormControl fullWidth required>
+            {/* <FormControl fullWidth required>
               <InputLabel>Select User</InputLabel>
               <Select
                 value={role}
@@ -138,7 +139,7 @@ const LoginPage = () => {
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="mentor">Mentor</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <TextField
               label="Email"

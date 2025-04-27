@@ -170,7 +170,7 @@ const Projects = () => {
                         <InsertDriveFile fontSize="small" color="action" />
                         <Typography color="black">
                           <a
-                            href={`http://localhost:3000/${project.srsFile}`}
+                            href={project.srsFile}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{

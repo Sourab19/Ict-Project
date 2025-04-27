@@ -36,7 +36,7 @@ const AddMentor = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/project/unassigned");
+        const res = await axios.get("http://localhost:3000/project/get");
 
         let allProjects = res.data;
 
