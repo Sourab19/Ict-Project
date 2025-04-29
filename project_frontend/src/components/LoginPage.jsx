@@ -36,11 +36,16 @@ const LoginPage = () => {
     axios.post('http://localhost:3000/mentor/login', loginData)
       .then((res) => {
         alert(res.data.message);
-        const { role } = res.data;
+        const { role, mentorId } = res.data;
         if (role === 'admin') {
           navigate('/admindashboard');
         } else if (role === 'mentor') {
-          navigate('/mentordashboard');
+          if (mentorId) {
+            sessionStorage.setItem('mentorId', mentorId);  // **SAVE mentorId in sessionStorage**
+            navigate('/mentordashboard');
+          } else {
+            alert('Mentor ID missing. Please contact admin.');
+          }
         }
       })
       .catch((err) => {

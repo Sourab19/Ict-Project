@@ -29,10 +29,30 @@ router.post('/login', async (req, res) => {
     return res.status(200).send({
       message: `${mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)} Login Successful`,
       role: mentor.role, // Send the role in the response
+      mentorId: mentor._id,
     });
 
   } catch (error) {
     res.status(500).send({ message: 'Error' });
+  }
+});
+
+
+router.get('/:id', async (req, res) => {
+  try {
+    const mentorId = req.params.id;
+
+    const mentor = await mentorModel.findById(mentorId)
+      .populate('projects'); // populate project details
+
+    if (!mentor) {
+      return res.status(404).json({ message: 'Mentor not found' });
+    }
+
+    res.json(mentor);
+  } catch (error) {
+    console.error('Error fetching mentor:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

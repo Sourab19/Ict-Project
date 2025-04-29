@@ -25,7 +25,7 @@ const AddMentor = () => {
   const [name, setName] = useState(mentorToEdit ? mentorToEdit.name : "");
   const [email, setEmail] = useState(mentorToEdit ? mentorToEdit.email : "");
   const [phone, setPhone] = useState(mentorToEdit ? mentorToEdit.number : "");
-  const [password, setPassword] = useState(""); // Not pre-filled
+  const [password, setPassword] = useState(mentorToEdit ? mentorToEdit.password : ""); // Not pre-filled
   const [projects, setProjects] = useState(
     mentorToEdit ? mentorToEdit.projects.map((p) => p._id) : []
   );

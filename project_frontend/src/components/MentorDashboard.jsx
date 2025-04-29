@@ -1,95 +1,198 @@
-import React from 'react';
-import {
-  AppBar, Box, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText,
-  Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import Navbar2 from "./Navbar2";
+import { useNavigate } from "react-router-dom";
+import { Box, Grid, Typography } from "@mui/material";
+import axios from "axios";
+import { Container } from "react-bootstrap";
+import home1 from "../images/home5.avif"; // Section 1
+import home2 from "../images/home6.avif"; // Section 2
+import home3 from "../images/home7.avif";
 
 const MentorDashboard = () => {
-  const navigate = useNavigate();
+  const [mentor, setMentor] = useState(null); // store mentor details
+  const mentorId = sessionStorage.getItem("mentorId"); // get mentorId
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-    navigate('/');
-  };
-
-  const handleViewClick = () => {
-    navigate('/submissions');
-  };
+  useEffect(() => {
+    if (mentorId) {
+      axios
+        .get(`http://localhost:3000/mentor/${mentorId}`)
+        .then((res) => {
+          setMentor(res.data);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch mentor:", err);
+          alert("Failed to load mentor data");
+        });
+    }
+  }, [mentorId]);
+  useEffect(() => {
+    if (mentor) {
+      console.log("Mentor fetched:", mentor);
+      console.log("Mentor projects:", mentor.projects);
+    }
+  }, [mentor]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Drawer
+    <>
+      <Navbar2 />
+      <Box
         sx={{
-          width: 240,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
-            backgroundColor: '#2565AE',
-            color: 'white',
-          },
+          backgroundColor: "white",
+          color: "black",
+          py: 6,
+          height: { xs: "auto", sm: "900px", md: "600px" },
+          fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
         }}
-        variant="permanent"
-        anchor="left"
       >
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <IconButton sx={{ color: 'white' }}>
-            <AccountCircleIcon sx={{ fontSize: 40 }} />
-          </IconButton>
-        </Box>
+        <Container sx={{ py: 5 }}>
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            gap={4}
+          >
+            {/* Image on Left */}
+            <Box
+              component="img"
+              src={home1}
+              alt="Mentor Welcome"
+              sx={{
+                width: { xs: "100%", md: "50%" },
+                maxWidth: 500,
+                borderRadius: 2,
+                boxShadow: 3,
+              }}
+            />
 
-        <Divider />
-
-        <List>
-          <ListItem button component={Link} to="/ref">
-            <ListItemText primary="Reference Materials" sx={{ color: 'white' }} />
-          </ListItem>
-        </List>
-      </Drawer>
-
-      <Box sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '64px', width: '100%' }}>
-        <AppBar position="fixed" sx={{ backgroundColor: '#2565AE' }}>
-          <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              MENTOR DASHBOARD
-            </Typography>
-            <Button color="inherit" onClick={handleLogout}>Logout</Button>
-          </Toolbar>
-        </AppBar>
-
-        <Box sx={{ marginTop: '64px' }}>
-          <Typography variant="h5" gutterBottom>Projects List</Typography>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>Project Name</strong></TableCell>
-                  <TableCell><strong>Actions</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>E-commerce website</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={handleViewClick}
-                    >
-                      View Submissions
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+            {/* Text on Right */}
+            <Box flex={1}>
+              <Typography variant="h3" fontWeight="bold" gutterBottom>
+                {mentor ? `Welcome ${mentor.name},` : "Loading..."}
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "1.1rem", lineHeight: 1.8 }}
+              >
+                At ICTAK, we truly believe that mentors are the foundation of a
+                successful internship experience. This platform is thoughtfully
+                designed to make your mentorship journey smoother, more
+                organized, and highly impactful.
+                <br />
+                <br />
+                As a mentor, you are not just guiding projects; you are shaping
+                the skills, confidence, and creativity of future professionals.
+                Your role is vital in nurturing young talent, helping students
+                bring their ideas to life, and providing them with the support
+                and knowledge they need to succeed. With your guidance, students
+                can transform their potential into real-world success.
+              </Typography>
+            </Box>
+          </Box>
+        </Container>
       </Box>
-    </Box>
+
+      {/* Section 2: Project Management */}
+      <Box
+        sx={{
+          backgroundColor: "#474b52",
+          color: "white",
+          py: 6,
+          height:{ xs: "auto", sm: "900px", md: "600px" },
+        }}
+      >
+        <Container sx={{ py: 5 }}>
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            gap={4}
+          >
+            {/* Content on Left */}
+            <Box flex={1}>
+              <Typography variant="h3" gutterBottom fontWeight="bold">
+                Why Your Role Matters
+              </Typography>
+              <Typography variant="h6">
+                Mentors provide the bridge between academic knowledge and
+                industry expectations. Through your insights and experience, you
+                help students:
+              </Typography>
+              <ul style={{ fontSize: "20px" }}>
+                <li>Build confidence</li>
+                <li>Develop practical skills</li>
+                <li>Foster a spirit of innovation</li>
+                <li>Prepare for future career challenges</li>
+              </ul>
+            </Box>
+
+            {/* Image on Right */}
+            <Box
+              component="img"
+              src={home2}
+              alt="Project Topic Management"
+              sx={{
+                width: { xs: "100%", md: "50%" },
+                maxWidth: "500px",
+                height: "auto", // Corrected from "heigth" to "height"
+                borderRadius: 2,
+                objectFit: "contain",
+                boxShadow: 3,
+              }}
+            />
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Section 3: Mentor Management */}
+      <Box
+        sx={{
+          backgroundColor: "white",
+          color: "black",
+          py: 6,
+          height: { xs: "auto", sm: "900px", md: "600px" },
+        }}
+      >
+        <Container sx={{ py: 5 }}>
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            gap={4}
+          >
+            {/* Image on Left */}
+            <Box
+              component="img"
+              src={home3}
+              alt="Mentor Management"
+              sx={{
+                width: { xs: "100%", md: "50%" },
+                maxWidth: "800px",
+                height: "auto", // Ensures the image doesn't stretch vertically
+                borderRadius: 2,
+                objectFit: "contain",
+                boxShadow: 3,
+              }}
+            />
+
+            {/* Content on Right */}
+            <Box flex={1}>
+              <Typography variant="h3" gutterBottom fontWeight="bold">
+                Capabilities of Mentors
+              </Typography>
+              <Typography variant="h6">
+                As a mentor on the ICTAK Internship Portal, you have a
+                centralized dashboard to manage all your assigned projects
+                efficiently. You can review student submissions, provide marks,
+                add comments, and make edits or deletions as needed. The portal
+                allows you to track the evaluation status of each submission.
+                Additionally, you can upload helpful reference materials to
+                ensure students have access to the latest resources.
+              </Typography>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+    </>
   );
 };
 

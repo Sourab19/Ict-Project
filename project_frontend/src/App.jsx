@@ -12,6 +12,8 @@ import MentorDashboard from "./components/MentorDashboard";
 import RefMaterials from "./components/RefMaterials";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./components/Footer";
+import AddSubmission from "./components/AddSubmission";
+import MentorProjects from "./components/MentorProjects";
 
 function App() {
   const location = useLocation();
@@ -30,6 +32,8 @@ function App() {
         <Route path="/ref" element={<RefMaterials />} />
         <Route path="/addmentor" element={<AddMentor />} />
         <Route path="/addproject" element={<AddProject />} />
+        <Route path="/addsubmission" element={<AddSubmission />} />
+        <Route path="/mentorprojects" element={<MentorProjects />} />
        
         <Route path="/" element={<LoginPage />} />
       </Routes>
