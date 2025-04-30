@@ -3,13 +3,13 @@ const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-
 const mentorModel = require("../model/mentorData");
-const Project = require("../model/projectData"); 
+const Project = require("../model/projectData");
+const submissionData = require("../model/submissionData");
 
 // Login
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -17,49 +17,68 @@ router.post('/login', async (req, res) => {
     const mentor = await mentorModel.findOne({ email });
 
     if (!mentor) {
-      return res.status(404).send({ message: 'Invalid email' });
+      return res.status(404).send({ message: "Invalid email" });
     }
 
     // Check if the password matches
     if (mentor.password !== password) {
-      return res.status(404).send({ message: 'Invalid password' });
+      return res.status(404).send({ message: "Invalid password" });
     }
 
     // Send the role along with the login success message
     return res.status(200).send({
-      message: `${mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)} Login Successful`,
+      message: `${
+        mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)
+      } Login Successful`,
       role: mentor.role, // Send the role in the response
       mentorId: mentor._id,
     });
-
   } catch (error) {
-    res.status(500).send({ message: 'Error' });
+    res.status(500).send({ message: "Error" });
   }
 });
 
+router.post("/submission", async (req, res) => {
+  try {
+    const { name, status, marks, comments, projects, mentorId } = req.body;
 
-router.get('/:id', async (req, res) => {
+    const newSubmission = new submissionData({
+      name,
+      status,
+      marks,
+      comments,
+      projects, // should be an array of project _ids
+      mentor: mentorId,
+    });
+
+    const saved = await newSubmission.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    console.error("Error saving submission:", err);
+    res.status(500).json({ error: "Failed to save submission" });
+  }
+});
+
+router.get("/:id", async (req, res) => {
   try {
     const mentorId = req.params.id;
 
-    const mentor = await mentorModel.findById(mentorId)
-      .populate('projects'); // populate project details
+    const mentor = await mentorModel.findById(mentorId).populate("projects"); // populate project details
 
     if (!mentor) {
-      return res.status(404).json({ message: 'Mentor not found' });
+      return res.status(404).json({ message: "Mentor not found" });
     }
 
     res.json(mentor);
   } catch (error) {
-    console.error('Error fetching mentor:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching mentor:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-
 // Add mentor
 
-router.post('/add', async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     const { name, email, number, password, projects } = req.body;
 
@@ -70,8 +89,7 @@ router.post('/add', async (req, res) => {
       password,
       projects,
 
-      role: "mentor"
-
+      role: "mentor",
     });
 
     const savedMentor = await newMentor.save();
@@ -82,11 +100,12 @@ router.post('/add', async (req, res) => {
   }
 });
 
-
 // Get all mentors
 router.get("/", async (req, res) => {
   try {
-    const mentors = await mentorModel.find({ role: "mentor" }).populate("projects");
+    const mentors = await mentorModel
+      .find({ role: "mentor" })
+      .populate("projects");
     res.status(200).json(mentors);
   } catch (error) {
     console.error("Error fetching mentors:", error);
@@ -98,18 +117,29 @@ router.get("/", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   try {
     const existingMentor = await mentorModel.findById(req.params.id);
-    if (!existingMentor) return res.status(404).json({ message: "Mentor not found" });
+    if (!existingMentor)
+      return res.status(404).json({ message: "Mentor not found" });
 
-    const oldProjects = existingMentor.projects.map(p => p.toString());
+    const oldProjects = existingMentor.projects.map((p) => p.toString());
     const newProjects = req.body.projects;
 
-    const removed = oldProjects.filter(id => !newProjects.includes(id));
-    const added = newProjects.filter(id => !oldProjects.includes(id));
+    const removed = oldProjects.filter((id) => !newProjects.includes(id));
+    const added = newProjects.filter((id) => !oldProjects.includes(id));
 
-    await Project.updateMany({ _id: { $in: removed } }, { $set: { assigned: false } });
-    await Project.updateMany({ _id: { $in: added } }, { $set: { assigned: true } });
+    await Project.updateMany(
+      { _id: { $in: removed } },
+      { $set: { assigned: false } }
+    );
+    await Project.updateMany(
+      { _id: { $in: added } },
+      { $set: { assigned: true } }
+    );
 
-    const updatedMentor = await mentorModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedMentor = await mentorModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
 
     res.status(200).json(updatedMentor);
   } catch (error) {
@@ -137,6 +167,5 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete mentor" });
   }
 });
-
 
 module.exports = router;
