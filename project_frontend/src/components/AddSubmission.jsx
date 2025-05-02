@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar2 from "./Navbar2";
 import {
   Box,
   Button,
@@ -11,24 +10,27 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Navbar2 from "./Navbar2";
 import img from "../images/mentor.jpg";
 import logo from "../images/logo.jpg";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AddSubmission = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const editingSubmission = location.state?.submission || null;
+
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
   const [marks, setMarks] = useState("");
   const [comments, setComments] = useState("");
-  const [availableProjects, setAvailableProjects] = useState([]); // for list of options
+  const [availableProjects, setAvailableProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("");
-  const [mentor, setMentor] = useState(null); 
+  const [mentor, setMentor] = useState(null);
 
   const mentorId = sessionStorage.getItem("mentorId");
-  const navigate =useNavigate();
 
-  
   useEffect(() => {
     if (mentorId) {
       axios
@@ -45,44 +47,51 @@ const AddSubmission = () => {
   }, [mentorId]);
 
   useEffect(() => {
-    if (mentor) {
-      console.log("Mentor fetched:", mentor);
-      console.log("Mentor projects:", mentor.projects);
+    if (editingSubmission) {
+      setName(editingSubmission.name || "");
+      setStatus(editingSubmission.status || "");
+      setMarks(editingSubmission.marks || "");
+      setComments(editingSubmission.comments || "");
+      if (editingSubmission.projects?.[0]?._id) {
+        setSelectedProject(editingSubmission.projects[0]._id);
+      }
     }
-  }, [mentor]);
+  }, [editingSubmission]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const mentorId = sessionStorage.getItem("mentorId");
-  
-    // Basic validation
+
     if (!selectedProject || !mentorId) {
-      alert("Please select a project and ensure you're logged in as a mentor.");
+      alert("Please select a project and ensure you're logged in.");
       return;
     }
-  
-    axios
-      .post("http://localhost:3000/mentor/submission", {
-        name,
-        status,
-        marks,
-        comments,
-        projects: [selectedProject], 
-        mentorId,
-      })
-      .then((res) => {
-        alert("Submission successful!");
-        console.log("Submitted data:", res.data);
-        navigate('/submissions')
-        
-      })
-      .catch((err) => {
-        console.error("Submission failed:", err);
-        alert("Failed to submit. Please try again.");
-      });
+
+    const payload = {
+      name,
+      status,
+      marks,
+      comments,
+      projects: [selectedProject],
+      mentorId,
+    };
+
+    try {
+      if (editingSubmission) {
+        await axios.put(
+          `http://localhost:3000/mentor/submission/${editingSubmission._id}`,
+          payload
+        );
+        alert("Submission updated successfully!");
+      } else {
+        await axios.post("http://localhost:3000/mentor/submission", payload);
+        alert("Submission created successfully!");
+      }
+      navigate("/submissions");
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Failed to submit. Please try again.");
+    }
   };
-  
 
   return (
     <>
@@ -94,7 +103,6 @@ const AddSubmission = () => {
           minHeight: "100vh",
         }}
       >
-        {/* left - Image */}
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
@@ -105,14 +113,10 @@ const AddSubmission = () => {
           <img
             src={img}
             alt="Mentor Illustration"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </Box>
-        {/* Right - Form */}
+
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
@@ -140,7 +144,7 @@ const AddSubmission = () => {
                 style={{ width: "100px", marginBottom: 10 }}
               />
               <Typography variant="h4" sx={{ color: "text.secondary" }}>
-                Add Submission
+                {editingSubmission ? "Edit Submission" : "Add Submission"}
               </Typography>
             </Box>
 
@@ -150,12 +154,8 @@ const AddSubmission = () => {
               onSubmit={handleSubmit}
             >
               <FormControl fullWidth required>
-                <InputLabel id="project-select-label">
-                  Select Project
-                </InputLabel>
+                <InputLabel>Select Project</InputLabel>
                 <Select
-                  labelId="project-select-label"
-                  id="project-select"
                   value={selectedProject}
                   onChange={(e) => setSelectedProject(e.target.value)}
                 >
@@ -170,9 +170,9 @@ const AddSubmission = () => {
               <TextField
                 label="Name"
                 variant="outlined"
-                value={name}
                 fullWidth
                 required
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
 
@@ -191,27 +191,26 @@ const AddSubmission = () => {
               <TextField
                 label="Marks"
                 variant="outlined"
-                value={marks}
+                type="number"
                 fullWidth
                 required
-                type="number"
+                value={marks}
                 onChange={(e) => setMarks(e.target.value)}
               />
 
               <TextField
                 label="Comments"
                 variant="outlined"
-                value={comments}
-                fullWidth
                 multiline
                 minRows={3}
+                fullWidth
+                value={comments}
                 onChange={(e) => setComments(e.target.value)}
               />
 
               <Button
                 type="submit"
                 variant="contained"
-                color="inherit"
                 fullWidth
                 sx={{
                   mt: 1,
@@ -220,12 +219,10 @@ const AddSubmission = () => {
                   fontWeight: "bold",
                   color: "white",
                   borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: "#303f9f",
-                  },
+                  "&:hover": { backgroundColor: "#303f9f" },
                 }}
               >
-                Submit
+                {editingSubmission ? "Update" : "Submit"}
               </Button>
             </Box>
           </Paper>

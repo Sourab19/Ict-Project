@@ -144,7 +144,7 @@ const Mentors = () => {
                   position: "relative",
                   overflow: "hidden",
                   marginLeft:'140px',
-                  height:'350px'
+                  height:'380px'
                 }}
               >
 

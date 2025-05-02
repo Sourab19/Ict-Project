@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+const mongoose = require("mongoose");
 
 const mentorModel = require("../model/mentorData");
 const Project = require("../model/projectData");
 const submissionData = require("../model/submissionData");
 
 // Login
-
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -27,9 +27,7 @@ router.post("/login", async (req, res) => {
 
     // Send the role along with the login success message
     return res.status(200).send({
-      message: `${
-        mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)
-      } Login Successful`,
+      message: `${mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)} Login Successful`,
       role: mentor.role, // Send the role in the response
       mentorId: mentor._id,
     });
@@ -38,17 +36,57 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Route: GET /mentor/submissions?mentorId=xyz
+// Fetch submissions of the logged-in mentor
+// Route: GET /mentor/submission?mentorId=xyz
+router.get("/submission", async (req, res) => {
+  try {
+    const { mentorId, projectId } = req.query;
+    if (!mentorId) return res.status(400).send({ message: "mentorId is required" });
+
+    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+      return res.status(400).send({ message: "Invalid mentorId" });
+    }
+
+    const mentorObjectId = new mongoose.Types.ObjectId(mentorId);
+    let query = { mentor: mentorObjectId };
+
+    if (projectId && mongoose.Types.ObjectId.isValid(projectId)) {
+      query.projects = new mongoose.Types.ObjectId(projectId); // works even if it's an array
+    }
+
+    const submissions = await submissionData
+      .find(query)
+      .populate("projects")
+      .populate("mentor");
+
+    if (submissions.length === 0) {
+      return res.status(404).json({ message: "No submissions found for this mentor" });
+    }
+
+    res.json(submissions);
+  } catch (err) {
+    console.error("Error fetching submissions:", err);
+    res.status(500).json({ error: "Failed to fetch submissions" });
+  }
+});
+
+
+// Route: POST /mentor/submission
+// Add a new submission for a mentor
 router.post("/submission", async (req, res) => {
   try {
     const { name, status, marks, comments, projects, mentorId } = req.body;
+
 
     const newSubmission = new submissionData({
       name,
       status,
       marks,
       comments,
-      projects, // should be an array of project _ids
-      mentor: mentorId,
+      projects, // array of ObjectId
+      mentor: new mongoose.Types.ObjectId(mentorId),
+      // ✅ force ObjectId type
     });
 
     const saved = await newSubmission.save();
@@ -59,25 +97,36 @@ router.post("/submission", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+// Route: PUT /mentor/submission/:id
+// Update a submission
+router.put("/submission/:id", async (req, res) => {
   try {
-    const mentorId = req.params.id;
-
-    const mentor = await mentorModel.findById(mentorId).populate("projects"); // populate project details
-
-    if (!mentor) {
-      return res.status(404).json({ message: "Mentor not found" });
-    }
-
-    res.json(mentor);
-  } catch (error) {
-    console.error("Error fetching mentor:", error);
-    res.status(500).json({ message: "Server error" });
+    const updated = await submissionData.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update submission" });
   }
 });
 
-// Add mentor
+// Route: DELETE /mentor/submission/:id
+// Delete a submission
+router.delete("/submission/:id", async (req, res) => {
+  try {
+    await submissionData.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Submission deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete submission" });
+  }
+});
 
+
+
+// Route: POST /mentor/add
+// Add a new mentor
 router.post("/add", async (req, res) => {
   try {
     const { name, email, number, password, projects } = req.body;
@@ -88,7 +137,6 @@ router.post("/add", async (req, res) => {
       number,
       password,
       projects,
-
       role: "mentor",
     });
 
@@ -100,6 +148,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
+// Route: GET /mentor/
 // Get all mentors
 router.get("/", async (req, res) => {
   try {
@@ -113,12 +162,12 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Update mentor
+// Route: PUT /mentor/update/:id
+// Update mentor information
 router.put("/update/:id", async (req, res) => {
   try {
     const existingMentor = await mentorModel.findById(req.params.id);
-    if (!existingMentor)
-      return res.status(404).json({ message: "Mentor not found" });
+    if (!existingMentor) return res.status(404).json({ message: "Mentor not found" });
 
     const oldProjects = existingMentor.projects.map((p) => p.toString());
     const newProjects = req.body.projects;
@@ -148,7 +197,8 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
-// Delete mentor
+// Route: DELETE /mentor/delete/:id
+// Delete a mentor
 router.delete("/delete/:id", async (req, res) => {
   try {
     const mentor = await mentorModel.findById(req.params.id);
@@ -168,4 +218,27 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// ... all the other routes above ...
+
+// Route: PUT /mentor/update/:id
+// Route: DELETE /mentor/delete/:id
+
+// 🔻 MOVE THIS TO THE VERY END
+router.get("/:id", async (req, res) => {
+  try {
+    const mentorId = req.params.id;
+    const mentor = await mentorModel.findById(mentorId).populate("projects");
+
+    if (!mentor) {
+      return res.status(404).json({ message: "Mentor not found" });
+    }
+
+    res.json(mentor);
+  } catch (error) {
+    console.error("Error fetching mentor:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
+
