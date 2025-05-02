@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import img from "../images/img5.avif";
 
 const Submissions = () => {
   const navigate = useNavigate();
@@ -39,7 +40,6 @@ const Submissions = () => {
       console.error("Failed to fetch mentor's projects", err);
     }
   };
-  
 
   const fetchSubmissions = async (projectId = "") => {
     try {
@@ -87,174 +87,186 @@ const Submissions = () => {
 
   return (
     <>
-  
-  <Box
-    sx={{
-      backgroundImage: 'url("https://img.freepik.com/premium-vector/abstract-white-modern-background-with-wavy-lines_745217-362.jpg")',
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh",
-      pb: 5,
-    }}
-  >
-    <Navbar2 />
-
-
-
-      {/* Image Banner with Button */}
-      <Box sx={{ position: "relative", mt: 2 }}>
-        <Box
-          component="img"
-          src="https://img.freepik.com/premium-vector/leadership-development-training-illustration_767931-7.jpg"
-          alt="Submissions Banner"
-          sx={{
-            width: "80%",
-            height: "450px",
-            objectFit: "cover",
-            borderRadius: 4,
-            marginLeft: "145px",
-            transition: "transform 0.6s ease",
-            animation: "zoomIn 1s ease",
-            "&:hover": { transform: "scale(1.03)" },
-            "@keyframes zoomIn": {
-              "0%": { transform: "scale(0.95)", opacity: 0 },
-              "100%": { transform: "scale(1)", opacity: 1 },
-            },
-          }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/addsubmission")}
-          sx={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            marginRight: "340px",
-            textTransform: "none",
-            fontWeight: "bold",
-            color: "white",
-            borderRadius: 2,
-            boxShadow: 3,
-            "&:hover": {
-              backgroundColor: "#303f9f",
-            },
-          }}
-        >
-          Add Submission
-        </Button>
-      </Box>
-
-      {/* Project Filter */}
-      {/* Project Filter */}
-      <Box sx={{ mt: 4, width: "300px", ml: 4 }}>
-  <FormControl size="small" sx={{ minWidth: 200 }}>
-  <InputLabel>Filter by Project</InputLabel>
-  <Select
-    value={selectedProjectId}
-    onChange={handleProjectChange}
-    label="Filter by Project"
-  >
-    <MenuItem value="">All</MenuItem>
-    {projects.map((project) => (
-      <MenuItem key={project._id} value={project._id}>
-        {project.projectName}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
-
-</Box>
-
-
-      {/* Loading / Table */}
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-          <CircularProgress />
+      <Box
+        sx={{
+          backgroundImage:
+            'url("https://img.freepik.com/premium-vector/abstract-white-modern-background-with-wavy-lines_745217-362.jpg")',
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          minHeight: "100vh",
+          pb: 5,
+        }}
+      >
+        <Navbar2 />
+        {/* Image Banner with Button */}
+        <Box sx={{ position: "relative", mt: 2 }}>
+          <Box
+            component="img"
+            src={img}
+            alt="Submissions Banner"
+            sx={{
+              width: { xs: "90%", sm: "80%" }, // narrower on small screens
+              height: { xs: "250px", sm: "500px" },
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+              borderRadius: 4,
+              marginLeft: { xs: "auto", sm: "145px" },
+              transition: "transform 0.6s ease",
+              animation: "zoomIn 1s ease",
+              "&:hover": { transform: "scale(1.03)" },
+              "@keyframes zoomIn": {
+                "0%": { transform: "scale(0.95)", opacity: 0 },
+                "100%": { transform: "scale(1)", opacity: 1 },
+              },
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/addsubmission")}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              marginRight: "340px",
+              textTransform: "none",
+              fontWeight: "bold",
+              color: "white",
+              borderRadius: 2,
+              boxShadow: 3,
+              "&:hover": {
+                backgroundColor: "#303f9f",
+              },
+            }}
+          >
+            Add Submission
+          </Button>
         </Box>
-      ) : submissions.length === 0 ? (
-        <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-          No submissions found.
-        </Typography>
-      ) : (
-        <TableContainer component={Paper} sx={{ mt: 4, borderRadius: 2, boxShadow: 3 }}>
-          <Table>
-            <TableHead sx={{ backgroundColor: "grey" }}>
-              <TableRow>
-                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Name</TableCell>           
-                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Marks</TableCell>
-                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Comments</TableCell>
-                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Status</TableCell>
-                <TableCell sx={{ color: "#fff", fontWeight: "bold", width: "180px" }}>
-                  Projects
-                </TableCell>
-                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {submissions.map((submission) => (
-                <TableRow key={submission._id}>
+        {/* Project Filter */}
+        {/* Project Filter */}
+        <Box sx={{ mt: 4, width: "300px", ml: 4 }}>
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>Filter by Project</InputLabel>
+            <Select
+              value={selectedProjectId}
+              onChange={handleProjectChange}
+              label="Filter by Project"
+            >
+              <MenuItem value="">All</MenuItem>
+              {projects.map((project) => (
+                <MenuItem key={project._id} value={project._id}>
+                  {project.projectName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        {/* Loading / Table */}
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+            <CircularProgress />
+          </Box>
+        ) : submissions.length === 0 ? (
+          <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+            No submissions found.
+          </Typography>
+        ) : (
+          <TableContainer
+            component={Paper}
+            sx={{ mt: 4, borderRadius: 2, boxShadow: 3 }}
+          >
+            <Table>
+              <TableHead sx={{ backgroundColor: "grey" }}>
+                <TableRow>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Name
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Marks
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Comments
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Status
+                  </TableCell>
                   <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      backgroundColor: "whitesmoke",
-                      color: "black",
-                    }}
+                    sx={{ color: "#fff", fontWeight: "bold", width: "180px" }}
                   >
-                    {submission.name}
+                    Projects
                   </TableCell>
-          
-                  <TableCell>{submission.marks}</TableCell>
-                  <TableCell>{submission.comments}</TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        backgroundColor:
-                          submission.status.toLowerCase() === "completed"
-                            ? "#c8e6c9"
-                            : "#fff9c4",
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: 1,
-                        display: "inline-block",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {submission.status}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: "180px", wordWrap: "break-word" }}>
-                    {submission.projects?.map((p) => p.projectName).join(", ") || "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <Stack spacing={1} direction="column">
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleEdit(submission)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDelete(submission._id)}
-                      >
-                        Delete
-                      </Button>
-                    </Stack>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Actions
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-          ...
-          </Box>
+              </TableHead>
+              <TableBody>
+                {submissions.map((submission) => (
+                  <TableRow key={submission._id}>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        backgroundColor: "whitesmoke",
+                        color: "black",
+                      }}
+                    >
+                      {submission.name}
+                    </TableCell>
+
+                    <TableCell>{submission.marks}</TableCell>
+                    <TableCell>{submission.comments}</TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          backgroundColor:
+                            submission.status.toLowerCase() === "completed"
+                              ? "#c8e6c9"
+                              : "#fff9c4",
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1,
+                          display: "inline-block",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {submission.status}
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{ maxWidth: "180px", wordWrap: "break-word" }}
+                    >
+                      {submission.projects
+                        ?.map((p) => p.projectName)
+                        .join(", ") || "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <Stack spacing={1} direction="column">
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleEdit(submission)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDelete(submission._id)}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        ...
+      </Box>
     </>
   );
 };

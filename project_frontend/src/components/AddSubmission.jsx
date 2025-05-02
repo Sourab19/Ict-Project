@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import Navbar2 from "./Navbar2";
-import img from "../images/mentor.jpg";
+import img from "../images/img4.avif";
 import logo from "../images/logo.jpg";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
