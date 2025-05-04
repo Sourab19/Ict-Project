@@ -18,22 +18,23 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import img from "../images/img5.avif";
 
 const Submissions = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState(location.state?.selectedProjectId || "");
 
   const mentorId = sessionStorage.getItem("mentorId");
 
   const fetchProjects = async () => {
     try {
-      const mentorId = sessionStorage.getItem("mentorId");
       const res = await axios.get(`http://localhost:3000/mentor/${mentorId}`);
       setProjects(res.data.projects); // Assigned projects only
     } catch (err) {
@@ -63,8 +64,13 @@ const Submissions = () => {
 
   useEffect(() => {
     fetchProjects();
-    fetchSubmissions();
   }, []);
+
+  useEffect(() => {
+    if (mentorId) {
+      fetchSubmissions(selectedProjectId);
+    }
+  }, [selectedProjectId]);
 
   const handleDelete = async (id) => {
     try {
@@ -82,7 +88,6 @@ const Submissions = () => {
   const handleProjectChange = (event) => {
     const projectId = event.target.value;
     setSelectedProjectId(projectId);
-    fetchSubmissions(projectId);
   };
 
   return (
@@ -98,14 +103,15 @@ const Submissions = () => {
         }}
       >
         <Navbar2 />
-        {/* Image Banner with Button */}
+
+        {/* Image Banner */}
         <Box sx={{ position: "relative", mt: 2 }}>
           <Box
             component="img"
             src={img}
             alt="Submissions Banner"
             sx={{
-              width: { xs: "90%", sm: "80%" }, // narrower on small screens
+              width: { xs: "90%", sm: "80%" },
               height: { xs: "250px", sm: "500px" },
               backgroundRepeat: "no-repeat",
               backgroundSize: "contain",
@@ -142,8 +148,8 @@ const Submissions = () => {
             Add Submission
           </Button>
         </Box>
-        {/* Project Filter */}
-        {/* Project Filter */}
+
+        {/* Project Filter Dropdown */}
         <Box sx={{ mt: 4, width: "300px", ml: 4 }}>
           <FormControl size="small" sx={{ minWidth: 200 }}>
             <InputLabel>Filter by Project</InputLabel>
@@ -161,7 +167,8 @@ const Submissions = () => {
             </Select>
           </FormControl>
         </Box>
-        {/* Loading / Table */}
+
+        {/* Submission Table */}
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
             <CircularProgress />
@@ -190,9 +197,7 @@ const Submissions = () => {
                   <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
                     Status
                   </TableCell>
-                  <TableCell
-                    sx={{ color: "#fff", fontWeight: "bold", width: "180px" }}
-                  >
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold", width: "180px" }}>
                     Projects
                   </TableCell>
                   <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
@@ -212,7 +217,6 @@ const Submissions = () => {
                     >
                       {submission.name}
                     </TableCell>
-
                     <TableCell>{submission.marks}</TableCell>
                     <TableCell>{submission.comments}</TableCell>
                     <TableCell>
@@ -232,12 +236,8 @@ const Submissions = () => {
                         {submission.status}
                       </Box>
                     </TableCell>
-                    <TableCell
-                      sx={{ maxWidth: "180px", wordWrap: "break-word" }}
-                    >
-                      {submission.projects
-                        ?.map((p) => p.projectName)
-                        .join(", ") || "N/A"}
+                    <TableCell sx={{ maxWidth: "180px", wordWrap: "break-word" }}>
+                      {submission.projects?.map((p) => p.projectName).join(", ") || "N/A"}
                     </TableCell>
                     <TableCell>
                       <Stack spacing={1} direction="column">
@@ -265,7 +265,6 @@ const Submissions = () => {
             </Table>
           </TableContainer>
         )}
-        ...
       </Box>
     </>
   );
