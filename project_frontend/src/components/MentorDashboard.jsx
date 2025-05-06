@@ -7,6 +7,7 @@ import { Container } from "react-bootstrap";
 import home1 from "../images/home5.avif"; // Section 1
 import home2 from "../images/home6.avif"; // Section 2
 import home3 from "../images/home7.avif";
+import axiosInstance from "../axiosInterceptor";
 
 const MentorDashboard = () => {
   const [mentor, setMentor] = useState(null); // store mentor details
@@ -14,7 +15,7 @@ const MentorDashboard = () => {
 
   useEffect(() => {
     if (mentorId) {
-      axios
+      axiosInstance
         .get(`http://localhost:3000/mentor/${mentorId}`)
         .then((res) => {
           setMentor(res.data);

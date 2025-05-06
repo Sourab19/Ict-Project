@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ictLogo from "../images/logo.jpg"; // Adjust path as needed
 
 const Navbar = () => {
@@ -16,13 +16,18 @@ const Navbar = () => {
             alt="ICT Logo"
             style={{ width: 50, height: 50, marginRight: 10 }}
           />
-          <Typography variant="h6" component="div" sx={{ fontWeight: "bold"}} color="black" >
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ fontWeight: "bold" }}
+            color="black"
+          >
             Internship Portal -Admin
           </Typography>
         </Box>
 
         {/* Navigation Buttons */}
-        <Box sx={{color:'black'}}>
+        <Box sx={{ color: "black" }}>
           <Button color="inherit" onClick={() => navigate("/admindashboard")}>
             Home
           </Button>
@@ -32,7 +37,13 @@ const Navbar = () => {
           <Button color="inherit" onClick={() => navigate("/mentors")}>
             Mentors
           </Button>
-          <Button color="inherit" onClick={() => navigate("/")}>
+          <Button
+            color="inherit"
+            onClick={() => {
+              sessionStorage.removeItem("token"); 
+              navigate("/");
+            }}
+          >
             Logout
           </Button>
         </Box>
@@ -42,4 +53,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

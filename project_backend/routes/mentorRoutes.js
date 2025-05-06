@@ -2,18 +2,38 @@ const express = require("express");
 const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+const jwt =require('jsonwebtoken');
 const mongoose = require("mongoose");
 
 const mentorModel = require("../model/mentorData");
 const Project = require("../model/projectData");
 const submissionData = require("../model/submissionData");
 
+function verifytoken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).send("Unauthorized access: No token provided");
+  }
+
+  const token = authHeader.split(" ")[1]; 
+
+  try {
+    const payload = jwt.verify(token, "ict");
+    if (!payload) throw "Unauthorized access";
+    req.user = payload; 
+    next();
+  } catch (error) {
+    return res.status(403).send("Unauthorized access: Invalid token");
+  }
+}
+
 // Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find the mentor by email (no need to send role)
+    // Find the mentor by email 
     const mentor = await mentorModel.findOne({ email });
 
     if (!mentor) {
@@ -26,10 +46,14 @@ router.post("/login", async (req, res) => {
     }
 
     // Send the role along with the login success message
+    const payload = { email: mentor.email, password: mentor.password }; // optional: don't include password in production
+    const token = jwt.sign(payload, "ict"); 
+
     return res.status(200).send({
       message: `${mentor.role.charAt(0).toUpperCase() + mentor.role.slice(1)} Login Successful`,
       role: mentor.role, // Send the role in the response
       mentorId: mentor._id,
+      token,
     });
   } catch (error) {
     res.status(500).send({ message: "Error" });
@@ -39,7 +63,7 @@ router.post("/login", async (req, res) => {
 // Route: GET /mentor/submissions?mentorId=xyz
 // Fetch submissions of the logged-in mentor
 // Route: GET /mentor/submission?mentorId=xyz
-router.get("/submission", async (req, res) => {
+router.get("/submission", verifytoken , async (req, res) => {
   try {
     const { mentorId, projectId } = req.query;
     if (!mentorId) return res.status(400).send({ message: "mentorId is required" });
@@ -74,7 +98,7 @@ router.get("/submission", async (req, res) => {
 
 // Route: POST /mentor/submission
 // Add a new submission for a mentor
-router.post("/submission", async (req, res) => {
+router.post("/submission", verifytoken , async (req, res) => {
   try {
     const { name, status, marks, comments, projects, mentorId } = req.body;
 
@@ -99,7 +123,7 @@ router.post("/submission", async (req, res) => {
 
 // Route: PUT /mentor/submission/:id
 // Update a submission
-router.put("/submission/:id", async (req, res) => {
+router.put("/submission/:id",verifytoken , async (req, res) => {
   try {
     const updated = await submissionData.findByIdAndUpdate(
       req.params.id,
@@ -114,7 +138,7 @@ router.put("/submission/:id", async (req, res) => {
 
 // Route: DELETE /mentor/submission/:id
 // Delete a submission
-router.delete("/submission/:id", async (req, res) => {
+router.delete("/submission/:id",verifytoken , async (req, res) => {
   try {
     await submissionData.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Submission deleted successfully" });
@@ -127,7 +151,7 @@ router.delete("/submission/:id", async (req, res) => {
 
 // Route: POST /mentor/add
 // Add a new mentor
-router.post("/add", async (req, res) => {
+router.post("/add",verifytoken , async (req, res) => {
   try {
     const { name, email, number, password, projects } = req.body;
 
@@ -150,7 +174,7 @@ router.post("/add", async (req, res) => {
 
 // Route: GET /mentor/
 // Get all mentors
-router.get("/", async (req, res) => {
+router.get("/",verifytoken , async (req, res) => {
   try {
     const mentors = await mentorModel
       .find({ role: "mentor" })
@@ -164,7 +188,7 @@ router.get("/", async (req, res) => {
 
 // Route: PUT /mentor/update/:id
 // Update mentor information
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id",verifytoken , async (req, res) => {
   try {
     const existingMentor = await mentorModel.findById(req.params.id);
     if (!existingMentor) return res.status(404).json({ message: "Mentor not found" });
@@ -199,7 +223,7 @@ router.put("/update/:id", async (req, res) => {
 
 // Route: DELETE /mentor/delete/:id
 // Delete a mentor
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",verifytoken , async (req, res) => {
   try {
     const mentor = await mentorModel.findById(req.params.id);
     if (!mentor) return res.status(404).json({ message: "Mentor not found" });
@@ -224,7 +248,7 @@ router.delete("/delete/:id", async (req, res) => {
 // Route: DELETE /mentor/delete/:id
 
 // 🔻 MOVE THIS TO THE VERY END
-router.get("/:id", async (req, res) => {
+router.get("/:id",verifytoken , async (req, res) => {
   try {
     const mentorId = req.params.id;
     const mentor = await mentorModel.findById(mentorId).populate("projects");

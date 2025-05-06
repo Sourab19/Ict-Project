@@ -16,6 +16,7 @@ import {
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import img from "../images/img7.avif";
+import axiosInstance from "../axiosInterceptor";
 
 // Reusable card for each project
 const ProjectCard = ({ project }) => {
@@ -37,7 +38,7 @@ const ProjectCard = ({ project }) => {
     formData.append("srsFile", file);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `http://localhost:3000/project/upload/${project._id}`,
         formData,
         {
@@ -60,7 +61,7 @@ const ProjectCard = ({ project }) => {
 
   const handleDeleteFile = async (projectId, fileUrl) => {
     try {
-      await axios.delete(`http://localhost:3000/project/${projectId}/file`, {
+      await axiosInstance.delete(`http://localhost:3000/project/${projectId}/file`, {
         data: { fileUrl },
       });
       alert("File deleted successfully!");
@@ -158,7 +159,7 @@ const RefMaterials = () => {
 
   useEffect(() => {
     if (mentorId) {
-      axios
+      axiosInstance
         .get(`http://localhost:3000/mentor/${mentorId}`)
         .then((res) => {
           setMentor(res.data);

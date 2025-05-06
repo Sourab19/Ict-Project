@@ -15,6 +15,7 @@ import {
 import { Email, Phone, Assignment } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
+import axiosInstance from "../axiosInterceptor";
 
 const Mentors = () => {
   const [mentors, setMentors] = useState([]);
@@ -24,7 +25,7 @@ const Mentors = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/mentor");
+      const res = await axiosInstance.get("http://localhost:3000/mentor");
       setMentors(res.data);
     } catch (err) {
       console.error("Error fetching mentors:", err);
@@ -37,7 +38,7 @@ const Mentors = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/mentor/delete/${id}`);
+      await axiosInstance.delete(`http://localhost:3000/mentor/delete/${id}`);
       fetchMentors();
     } catch (err) {
       console.error("Error deleting mentor:", err);
@@ -50,7 +51,7 @@ const Mentors = () => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:3000/mentor/update/${editingId}`, {
+      await axiosInstance.put(`http://localhost:3000/mentor/update/${editingId}`, {
         ...formData,
         projects: formData.projects.split(",").map((p) => ({
           projectName: p.trim(),

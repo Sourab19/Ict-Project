@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const Project = require("../model/projectData");
+const jwt=require('jsonwebtoken');
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
 const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
 
@@ -9,8 +13,28 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
+function verifytoken(req, res, next) {
+  const authHeader = req.headers.authorization;
 
-router.post("/", upload.single("srsFile"), async (req, res) => {
+  if (!authHeader) {
+    return res.status(401).send("Unauthorized access: No token provided");
+  }
+
+  const token = authHeader.split(" ")[1]; // Remove 'Bearer'
+
+  try {
+    const payload = jwt.verify(token, "ict");
+    if (!payload) throw "Unauthorized access";
+    req.user = payload; // optional, attach user data
+    next();
+  } catch (error) {
+    return res.status(403).send("Unauthorized access: Invalid token");
+  }
+}
+
+
+
+router.post("/", verifytoken,upload.single("srsFile"), async (req, res) => {
   try {
     const { projectName, projectDescription } = req.body;
     let uploadedFileUrl = null;
@@ -36,7 +60,7 @@ router.post("/", upload.single("srsFile"), async (req, res) => {
   }
 });
 
-router.get("/get", async (req, res) => {
+router.get("/get",verifytoken, async (req, res) => {
   try {
     const projects = await Project.find();
     res.json(projects);
@@ -47,7 +71,7 @@ router.get("/get", async (req, res) => {
 
 
 //    Get only unassigned projects
-router.get("/unassigned", async (req, res) => {
+router.get("/unassigned", verifytoken,async (req, res) => {
   try {
     const unassigned = await Project.find({ assigned: false });
     res.json(unassigned);
@@ -57,12 +81,12 @@ router.get("/unassigned", async (req, res) => {
 });
 
 //    Convert unassigned projects from false to true 
-router.patch("/update/:id", async (req, res) => {
+router.patch("/update/:id",verifytoken, async (req, res) => {
   await Project.findByIdAndUpdate(req.params.id, { assigned: true });
   res.send("Updated");
 });
 
-router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
+router.put("/edit/:id", verifytoken, upload.single("srsFile"), async (req, res) => {
   try {
     const { projectName, projectDescription } = req.body;
 
@@ -95,7 +119,7 @@ router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
 
 
 // upload files to a project
-router.post("/upload/:projectId", upload.single("srsFile"), async (req, res) => {
+router.post("/upload/:projectId", verifytoken, upload.single("srsFile"), async (req, res) => {
   try {
     const { projectId } = req.params;
 
@@ -133,7 +157,7 @@ router.post("/upload/:projectId", upload.single("srsFile"), async (req, res) => 
 });
 
 // DELETE a file from a project
-router.delete("/:projectId/file", async (req, res) => {
+router.delete("/:projectId/file", verifytoken, async (req, res) => {
   try {
     const { projectId } = req.params;
     const { fileUrl } = req.body;
@@ -165,7 +189,7 @@ router.delete("/:projectId/file", async (req, res) => {
 
 
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", verifytoken,async (req, res) => {
   try {
     const deleted = await Project.findByIdAndDelete(req.params.id);
     if (!deleted) {

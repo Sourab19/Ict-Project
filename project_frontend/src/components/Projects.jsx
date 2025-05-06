@@ -15,6 +15,7 @@ import projectBanner from "../images/project.avif";
 import { Description, Folder, InsertDriveFile } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
+import axiosInstance from "../axiosInterceptor";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -22,7 +23,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/project/get");
+      const res = await axiosInstance.get("http://localhost:3000/project/get");
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -31,7 +32,7 @@ const Projects = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/project/delete/${id}`);
+      await axiosInstance.delete(`http://localhost:3000/project/delete/${id}`);
       fetchProjects();
     } catch (err) {
       console.error("Error deleting project:", err);

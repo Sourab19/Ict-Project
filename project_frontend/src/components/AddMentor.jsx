@@ -17,6 +17,7 @@ import axios from "axios";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
+import axiosInstance from "../axiosInterceptor";
 
 const AddMentor = () => {
   const location = useLocation();
@@ -36,7 +37,7 @@ const AddMentor = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/project/get");
+        const res = await axiosInstance.get("http://localhost:3000/project/get");
 
         let allProjects = res.data;
 
@@ -75,13 +76,13 @@ const AddMentor = () => {
 
     try {
       if (mentorToEdit?._id) {
-        await axios.put(
+        await axiosInstance.put(
           `http://localhost:3000/mentor/update/${mentorToEdit._id}`,
           formData
         );
         alert("Mentor updated successfully");
       } else {
-        await axios.post("http://localhost:3000/mentor/add", formData);
+        await axiosInstance.post("http://localhost:3000/mentor/add", formData);
         alert("Added Mentor successfully");
       }
 

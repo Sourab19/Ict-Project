@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import img from "../images/img6.avif";
+import axiosInstance from "../axiosInterceptor";
 
 const MentorProjects = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const MentorProjects = () => {
 
   useEffect(() => {
     if (mentorId) {
-      axios
+      axiosInstance
         .get(`http://localhost:3000/mentor/${mentorId}`)
         .then(async (res) => {
           const mentorData = res.data;
@@ -35,7 +36,7 @@ const MentorProjects = () => {
           const submissionsMap = {};
           for (const project of mentorData.projects) {
             try {
-              const subRes = await axios.get(
+              const subRes = await axiosInstance.get(
                 `http://localhost:3000/submissions/byProject/${project._id}`
               );
               submissionsMap[project._id] = subRes.data;

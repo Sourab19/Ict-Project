@@ -21,6 +21,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import img from "../images/img5.avif";
+import axiosInstance from "../axiosInterceptor";
 
 const Submissions = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Submissions = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/mentor/${mentorId}`);
+      const res = await axiosInstance.get(`http://localhost:3000/mentor/${mentorId}`);
       setProjects(res.data.projects); // Assigned projects only
     } catch (err) {
       console.error("Failed to fetch mentor's projects", err);
@@ -53,7 +54,7 @@ const Submissions = () => {
         ? `http://localhost:3000/mentor/submission?mentorId=${mentorId}&projectId=${projectId}`
         : `http://localhost:3000/mentor/submission?mentorId=${mentorId}`;
 
-      const res = await axios.get(url);
+      const res = await axiosInstance.get(url);
       setSubmissions(res.data);
     } catch (error) {
       console.error("Failed to fetch submissions", error);
@@ -74,7 +75,7 @@ const Submissions = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/mentor/submission/${id}`);
+      await axiosInstance.delete(`http://localhost:3000/mentor/submission/${id}`);
       fetchSubmissions(selectedProjectId);
     } catch (err) {
       console.error("Delete error", err);

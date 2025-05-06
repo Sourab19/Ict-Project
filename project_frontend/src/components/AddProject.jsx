@@ -4,6 +4,8 @@ import logo from "../images/logo.jpg";
 import project from "../images/project.avif";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import axiosInstance from "../axiosInterceptor";
+import Navbar from "./Navbar";
 
 const AddProject = () => {
   const location = useLocation();
@@ -30,12 +32,12 @@ const AddProject = () => {
 
     try {
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/project/edit/${projectToEdit._id}`, formData, {
+        await axiosInstance.put(`http://localhost:3000/project/edit/${projectToEdit._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Project updated successfully");
       } else {
-        await axios.post(`http://localhost:3000/project`, formData, {
+        await axiosInstance.post(`http://localhost:3000/project`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Project added successfully");
@@ -48,6 +50,8 @@ const AddProject = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, minHeight: "100vh" }}>
       
       {/* Right - Image */}
@@ -125,6 +129,7 @@ const AddProject = () => {
       </Box>
 
     </Box>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -9,42 +9,47 @@ import {
   TextField,
   Typography,
   Paper,
-  Container
-} from '@mui/material';
+  Container,
+} from "@mui/material";
 
-import logo from '../images/logo.jpg'; 
-import img from '../images/img.png';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import logo from "../images/logo.jpg";
+import img from "../images/img.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [role, setRole] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate=useNavigate();
+  const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (!email || !password ) {
+    if (!email || !password) {
       alert("Please enter both email and password");
       return;
     }
 
     const loginData = { email, password };
 
-    axios.post('http://localhost:3000/mentor/login', loginData)
+    axios
+      .post("http://localhost:3000/mentor/login", loginData)
       .then((res) => {
         alert(res.data.message);
-        const { role, mentorId } = res.data;
-        if (role === 'admin') {
-          navigate('/admindashboard');
-        } else if (role === 'mentor') {
+        const { role, mentorId, token } = res.data; 
+        if (token) {
+          sessionStorage.setItem("token", token); 
+        }
+
+        if (role === "admin") {
+          navigate("/admindashboard");
+        } else if (role === "mentor") {
           if (mentorId) {
-            sessionStorage.setItem('mentorId', mentorId);  // **SAVE mentorId in sessionStorage**
-            navigate('/mentordashboard');
+            sessionStorage.setItem("mentorId", mentorId); // **SAVE mentorId in sessionStorage**
+            navigate("/mentordashboard");
           } else {
-            alert('Mentor ID missing. Please contact admin.');
+            alert("Mentor ID missing. Please contact admin.");
           }
         }
       })
@@ -52,7 +57,7 @@ const LoginPage = () => {
         if (err.response?.data?.message) {
           alert(err.response.data.message);
         } else {
-          alert('Login failed');
+          alert("Login failed");
         }
         console.error(err);
       });
@@ -61,70 +66,69 @@ const LoginPage = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' }, 
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
       }}
     >
       {/* Left Design Section */}
       <Box
         sx={{
-          width: { xs: '100%', md: '70%' },
-          height: { xs: 250, md: 'auto' }, // Give height on mobile
-          backgroundColor: '#0081A0',
+          width: { xs: "100%", md: "70%" },
+          height: { xs: 250, md: "auto" }, // Give height on mobile
+          backgroundColor: "#0081A0",
           backgroundImage: ` url(${img})`,
-          backgroundSize: 'contain', // Shrinks the image to fit inside box
-          backgroundRepeat: 'no-repeat', 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'column',
+          backgroundSize: "contain", // Shrinks the image to fit inside box
+          backgroundRepeat: "no-repeat",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
           p: 4,
         }}
       >
-                <Typography
+        <Typography
           variant="h3"
           sx={{
-            color: 'white',
-            fontFamily: 'Times New Roman, serif',
-            marginTop:"60%",
-            textShadow: '2px 2px 6px rgba(0,0,0,0.6)',
-            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.6rem' },
+            color: "white",
+            fontFamily: "Times New Roman, serif",
+            marginTop: "60%",
+            textShadow: "2px 2px 6px rgba(0,0,0,0.6)",
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.6rem" },
           }}
         >
           Build Your Future with ICT Academy
         </Typography>
-
       </Box>
 
       {/* Right Login Section */}
       <Box
         sx={{
-          width: { xs: '100%', md: '30%' },
-          backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          width: { xs: "100%", md: "30%" },
+          backgroundColor: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           p: 4,
         }}
       >
         <Paper
           elevation={0}
           sx={{
-            width: '100%',
+            width: "100%",
             maxWidth: 400,
             p: 3,
-            textAlign: 'center',
-            boxShadow: 'none',
+            textAlign: "center",
+            boxShadow: "none",
           }}
         >
           <Box sx={{ mb: 2 }}>
             <img
               src={logo}
               alt="ICT Logo"
-              style={{ width: '150px', marginBottom: 10 }}
+              style={{ width: "150px", marginBottom: 10 }}
             />
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Sign in to continue to ICT Internship portal.
             </Typography>
           </Box>
@@ -132,7 +136,7 @@ const LoginPage = () => {
           <Box
             component="form"
             onSubmit={handleLogin}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
             {/* <FormControl fullWidth required>
               <InputLabel>Select User</InputLabel>
@@ -167,12 +171,12 @@ const LoginPage = () => {
               fullWidth
               sx={{
                 mt: 1,
-                backgroundColor: '#3f51b5',
-                textTransform: 'none',
-                fontWeight: 'bold',
+                backgroundColor: "#3f51b5",
+                textTransform: "none",
+                fontWeight: "bold",
                 borderRadius: 1,
-                '&:hover': {
-                  backgroundColor: '#303f9f',
+                "&:hover": {
+                  backgroundColor: "#303f9f",
                 },
               }}
             >
@@ -183,7 +187,7 @@ const LoginPage = () => {
           <Typography
             variant="caption"
             display="block"
-            sx={{ mt: 4, color: 'text.secondary' }}
+            sx={{ mt: 4, color: "text.secondary" }}
           >
             © 2025 Internship Portal by ICT
           </Typography>
