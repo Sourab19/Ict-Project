@@ -112,7 +112,7 @@ const Submissions = () => {
             src={img}
             alt="Submissions Banner"
             sx={{
-              width: { xs: "90%", sm: "80%" },
+              width: { xs: "100%", sm: "80%" },
               height: { xs: "250px", sm: "500px" },
               backgroundRepeat: "no-repeat",
               backgroundSize: "contain",

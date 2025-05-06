@@ -78,6 +78,7 @@ const Mentors = () => {
       backgroundSize: "cover",
       backgroundPosition: "center",
       padding: 4,
+      
     }}
   >
   <Box flex='1'>
@@ -88,7 +89,7 @@ const Mentors = () => {
   src="https://infostride.com/wp-content/uploads/2023/07/cost-to-build-mvp.png?w=1024.jpg"
   alt="Mentors Banner"
   style={{
-    width: "80%",
+    width: "85%",
     borderRadius: 16,
     height: "450px",
     objectFit: "cover",

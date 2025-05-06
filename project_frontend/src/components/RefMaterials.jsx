@@ -188,7 +188,7 @@ const RefMaterials = () => {
           src={img}
           alt="Submissions Banner"
           sx={{
-            width: { xs: "90%", sm: "90%" },
+            width: { xs: "100%", sm: "90%" },
             height: { xs: "250px", sm: "500px" },
             backgroundRepeat: "no-repeat",
             backgroundSize: "contain",

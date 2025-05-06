@@ -69,7 +69,7 @@ const AdminDashboard = () => {
           backgroundColor: "#474b52",
           color: "white",
           py: 6,
-          height: "800px",
+          height:{ xs: "auto", sm: "900px", md: "800px" },
         }}
       >
         <Container>
