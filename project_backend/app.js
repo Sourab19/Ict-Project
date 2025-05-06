@@ -7,6 +7,8 @@ app.use(cors());
 
 require("dotenv").config();
 require("./db/connection");
+app.use(express.json());
+
 
 const basicRoute2 = require("./routes/mentorRoutes");
 app.use("/mentor", basicRoute2);

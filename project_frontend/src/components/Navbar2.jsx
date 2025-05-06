@@ -36,6 +36,9 @@ const Navbar2 = () => {
               <Button color="inherit" onClick={() => navigate("/submissions")}>
                 Submissions
               </Button>
+              <Button color="inherit" onClick={() => navigate("/ref")}>
+                Reference Material
+              </Button>
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>

@@ -16,7 +16,8 @@ router.post("/", upload.single("srsFile"), async (req, res) => {
     let uploadedFileUrl = null;
 
     if (req.file) {
-      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
+      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+
       uploadedFileUrl = cloudinaryResponse.secure_url;
     }
 
@@ -71,7 +72,7 @@ router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
     };
 
     if (req.file) {
-      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
+      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer, req.file.originalname);
       updatedData.srsFile = cloudinaryResponse.secure_url;
     }
 
@@ -91,6 +92,76 @@ router.put("/edit/:id", upload.single("srsFile"), async (req, res) => {
     res.status(500).json({ error: "Failed to update project", details: err });
   }
 });
+
+
+// upload files to a project
+router.post("/upload/:projectId", upload.single("srsFile"), async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    // Upload to Cloudinary
+    const cloudinaryResponse = await uploadToCloudinary(
+      req.file.buffer,
+      req.file.originalname
+    );
+
+    const uploadedFileUrl = cloudinaryResponse.secure_url;
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      { $push: { srsFile: uploadedFileUrl } },
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    res.status(200).json({
+      message: "File uploaded successfully",
+      fileUrl: uploadedFileUrl,
+      project: updatedProject,
+    });
+  } catch (err) {
+    console.error("Error uploading file to project:", err);
+    res.status(500).json({ error: "Failed to upload file", details: err });
+  }
+});
+
+// DELETE a file from a project
+router.delete("/:projectId/file", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { fileUrl } = req.body;
+
+    if (!fileUrl) {
+      return res.status(400).json({ error: "Missing file URL" });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    // Ensure srsFile is an array
+    if (!Array.isArray(project.srsFile)) {
+      return res.status(400).json({ error: "srsFile is not an array" });
+    }
+
+    project.srsFile = project.srsFile.filter((url) => url !== fileUrl);
+    await project.save();
+
+    res.status(200).json({ message: "File deleted successfully", project });
+  } catch (err) {
+    console.error("Error deleting file:", err);
+    res.status(500).json({ error: "Failed to delete file" });
+  }
+});
+
 
 
 
