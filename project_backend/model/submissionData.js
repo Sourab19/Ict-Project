@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 
-const submissionSchema = new mongoose.Schema({
-  name: String,
-  status: String,
-  marks: String,
-  comments: String,
-  
-  // Reference to project(s)
-  projects: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "project", 
-  }],
-  mentor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "mentor",
-    required: true
-  },
+const SubmissionSchema = new mongoose.Schema({
+  studentName: String,
+  studentId: String,
+  projectId: String,
+  submissions: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId, auto: true }, // ✅ Add this
+      week: String,
+      marks: Number,
+      comment: String,
+      status: String,
+    },
+  ],
 });
 
-const submissionData = mongoose.model("submission", submissionSchema);
+const submissionData = mongoose.model("submission", SubmissionSchema);
 module.exports = submissionData;

@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const mentorModel = require("../model/mentorData");
 const Project = require("../model/projectData");
 const submissionData = require("../model/submissionData");
+const getDummySubmissions = require("../data/dummySubmissions");
+
 
 function verifytoken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -63,90 +65,121 @@ router.post("/login", async (req, res) => {
 // Route: GET /mentor/submissions?mentorId=xyz
 // Fetch submissions of the logged-in mentor
 // Route: GET /mentor/submission?mentorId=xyz
-router.get("/submission", verifytoken , async (req, res) => {
+router.get("/submission", verifytoken, async (req, res) => {
   try {
-    const { mentorId, projectId } = req.query;
-    if (!mentorId) return res.status(400).send({ message: "mentorId is required" });
+    const { projectId } = req.query;
 
-    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
-      return res.status(400).send({ message: "Invalid mentorId" });
+    let query = {};
+    if (projectId) {
+      query.projectId = projectId;
     }
 
-    const mentorObjectId = new mongoose.Types.ObjectId(mentorId);
-    let query = { mentor: mentorObjectId };
-
-    if (projectId && mongoose.Types.ObjectId.isValid(projectId)) {
-      query.projects = new mongoose.Types.ObjectId(projectId); // works even if it's an array
-    }
-
-    const submissions = await submissionData
-      .find(query)
-      .populate("projects")
-      .populate("mentor");
+    let submissions = await submissionData.find(query);
 
     if (submissions.length === 0) {
-      return res.status(404).json({ message: "No submissions found for this mentor" });
+      const dummy = getDummySubmissions(projectId || "P101");
+      await submissionData.insertMany(dummy);
+      submissions = await submissionData.find(query);
     }
 
     res.json(submissions);
   } catch (err) {
-    console.error("Error fetching submissions:", err);
-    res.status(500).json({ error: "Failed to fetch submissions" });
+    console.error("Error fetching/inserting submissions:", err);
+    res.status(500).json({ error: "Failed to fetch or insert submissions" });
   }
 });
 
 
 // Route: POST /mentor/submission
 // Add a new submission for a mentor
-router.post("/submission", verifytoken , async (req, res) => {
+// 🔐 PUT: Update a specific week submission for a student
+
+router.put("/submission/:studentId/:submissionId", verifytoken, async (req, res) => {
   try {
-    const { name, status, marks, comments, projects, mentorId } = req.body;
+    const { studentId, submissionId } = req.params;
+    const { week, marks, comment, status } = req.body;
 
+    // Add validation
+    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+      return res.status(400).json({ error: "Invalid submission ID" });
+    }
 
-    const newSubmission = new submissionData({
-      name,
-      status,
-      marks,
-      comments,
-      projects, // array of ObjectId
-      mentor: new mongoose.Types.ObjectId(mentorId),
-      // ✅ force ObjectId type
-    });
-
-    const saved = await newSubmission.save();
-    res.status(201).json(saved);
-  } catch (err) {
-    console.error("Error saving submission:", err);
-    res.status(500).json({ error: "Failed to save submission" });
-  }
-});
-
-// Route: PUT /mentor/submission/:id
-// Update a submission
-router.put("/submission/:id",verifytoken , async (req, res) => {
-  try {
-    const updated = await submissionData.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const updated = await submissionData.findOneAndUpdate(
+      { studentId, "submissions._id": new mongoose.Types.ObjectId(submissionId) },
+      {
+        $set: {
+          "submissions.$.week": week,
+          "submissions.$.marks": marks,
+          "submissions.$.comment": comment,
+          "submissions.$.status": status,
+        },
+      },
       { new: true }
     );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
     res.status(200).json(updated);
   } catch (err) {
+    console.error("Update error:", err);
     res.status(500).json({ error: "Failed to update submission" });
   }
 });
 
-// Route: DELETE /mentor/submission/:id
-// Delete a submission
-router.delete("/submission/:id",verifytoken , async (req, res) => {
+// DELETE: Delete full student submission record
+// DELETE: Remove one week's submission from a student
+
+
+router.delete("/submission/:studentId/:submissionId", verifytoken, async (req, res) => {
   try {
-    await submissionData.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Submission deleted successfully" });
+    const { studentId, submissionId } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+      return res.status(400).json({ error: "Invalid submission ID format" });
+    }
+
+    const submissionObjectId = new mongoose.Types.ObjectId(submissionId);
+
+    // Find the document that contains this specific submission
+    const studentDoc = await submissionData.findOne({
+      studentId,
+      "submissions._id": submissionObjectId
+    });
+
+    if (!studentDoc) {
+      return res.status(404).json({ 
+        message: "Submission not found for this student",
+        suggestion: "There may be multiple documents for this studentId"
+      });
+    }
+
+    // Perform the deletion
+    const result = await submissionData.updateOne(
+      { _id: studentDoc._id }, // Be specific - use the parent document's _id
+      { $pull: { submissions: { _id: submissionObjectId } } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No documents modified" });
+    }
+
+    res.status(200).json({ 
+      message: "Submission deleted successfully",
+      parentDocumentId: studentDoc._id,
+      deletedSubmissionId: submissionId
+    });
+
   } catch (err) {
-    res.status(500).json({ error: "Failed to delete submission" });
+    console.error("Delete error:", err);
+    res.status(500).json({ 
+      error: "Failed to delete submission",
+      details: err.message 
+    });
   }
 });
-
 
 
 // Route: POST /mentor/add
@@ -263,6 +296,7 @@ router.get("/:id",verifytoken , async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 module.exports = router;
 
