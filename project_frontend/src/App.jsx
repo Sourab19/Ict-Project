@@ -11,7 +11,6 @@ import Projects from "./components/Projects";
 import AdminDashboard from "./components/AdminDashboard";
 import MentorDashboard from "./components/MentorDashboard";
 import RefMaterials from "./components/RefMaterials";
-import AddSubmission from "./components/AddSubmission";
 import MentorProjects from "./components/MentorProjects";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PrivateRoutes from "./components/PrivateRoutes";
@@ -84,14 +83,6 @@ function App() {
           element={
             <PrivateRoutes>
               <AddProject />
-            </PrivateRoutes>
-          }
-        />
-        <Route
-          path="/addsubmission"
-          element={
-            <PrivateRoutes>
-              <AddSubmission />
             </PrivateRoutes>
           }
         />

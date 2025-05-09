@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import img from "../images/img5.avif";
 
 
 
@@ -219,7 +220,7 @@ const Submissions = () => {
         <Box sx={{ position: "relative", mt: 2 }}>
           <Box
             component="img"
-            src="https://img.freepik.com/premium-vector/leadership-development-training-illustration_767931-7.jpg"
+            src={img}
             alt="Submissions Banner"
             sx={{
               width: "80%",
