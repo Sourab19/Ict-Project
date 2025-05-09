@@ -14,6 +14,7 @@ import RefMaterials from "./components/RefMaterials";
 import AddSubmission from "./components/AddSubmission";
 import MentorProjects from "./components/MentorProjects";
 import "bootstrap/dist/css/bootstrap.min.css";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 function App() {
   return (
@@ -21,20 +22,87 @@ function App() {
       <Route path="/" element={<LoginPage />} />
 
       {/* All routes that need Layout */}
-      <Route
-        path="/"
-        element={<Layout />}
-      >
-        <Route path="admindashboard" element={<AdminDashboard />} />
-        <Route path="mentordashboard" element={<MentorDashboard />} />
-        <Route path="projects" element={<Projects />} />
-        <Route path="submissions" element={<Submissions />} />
-        <Route path="mentors" element={<Mentors />} />
-        <Route path="ref" element={<RefMaterials />} />
-        <Route path="addmentor" element={<AddMentor />} />
-        <Route path="addproject" element={<AddProject />} />
-        <Route path="addsubmission" element={<AddSubmission />} />
-        <Route path="mentorprojects" element={<MentorProjects />} />
+      <Route path="/" element={<Layout />}>
+        <Route
+          path="/admindashboard"
+          element={
+            <PrivateRoutes>
+              <AdminDashboard />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/mentordashboard"
+          element={
+            <PrivateRoutes>
+              <MentorDashboard />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <PrivateRoutes>
+              <Projects />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/submissions"
+          element={
+            <PrivateRoutes>
+              <Submissions />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/mentors"
+          element={
+            <PrivateRoutes>
+              <Mentors />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/ref"
+          element={
+            <PrivateRoutes>
+              <RefMaterials />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/addmentor"
+          element={
+            <PrivateRoutes>
+              <AddMentor />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/addproject"
+          element={
+            <PrivateRoutes>
+              <AddProject />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/addsubmission"
+          element={
+            <PrivateRoutes>
+              <AddSubmission />
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/mentorprojects"
+          element={
+            <PrivateRoutes>
+              <MentorProjects />
+            </PrivateRoutes>
+          }
+        />
       </Route>
     </Routes>
   );
