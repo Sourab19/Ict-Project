@@ -24,9 +24,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+
 
 
 const Submissions = () => {
+  const location = useLocation();
   const [projects, setProjects] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState("");
@@ -59,51 +62,44 @@ const Submissions = () => {
       const queryParams = new URLSearchParams();
       if (mentorId) queryParams.append("mentorId", mentorId);
       if (projectId) queryParams.append("projectId", projectId);
-
+  
       const res = await axios.get(
         `http://localhost:3000/mentor/submission?${queryParams.toString()}`,
         authHeader
       );
-
+  
       const studentMap = new Map();
       res.data.forEach(item => {
         if (!studentMap.has(item.studentId)) {
           studentMap.set(item.studentId, item.studentName);
         }
       });
+      
       const studentList = Array.from(studentMap.entries()).map(([id, name]) => ({
         studentId: id,
         studentName: name,
       }));
       setStudents(studentList);
-
-      // In fetchSubmissions
-const flattened = res.data.flatMap((submission) => {
-  const project = projectsList.find((p) => p._id === submission.projectId);
-  if (!project) return [];
   
-  return submission.submissions.map((weekData) => ({
-    ...weekData,
-    _id: weekData._id.toString(), // Ensure consistent ID format
-    studentName: submission.studentName,
-    studentId: submission.studentId,
-    projectId: submission.projectId,
-    projectName: project.projectName,
-    parentId: submission._id.toString(),
-  }));
-});
-// Add this to your fetchSubmissions
-console.log('Fetched submissions with IDs:', 
-  res.data.map(d => ({
-    student: d.studentId, 
-    submissions: d.submissions.map(s => s._id.toString())
-  }))
-);
-
+      const flattened = res.data.flatMap((submission) => {
+        const project = projectsList.find((p) => p._id === submission.projectId);
+        if (!project) return [];
+        
+        return submission.submissions.map((weekData) => ({
+          ...weekData,
+          _id: weekData._id.toString(),
+          studentName: submission.studentName,
+          studentId: submission.studentId,
+          projectId: submission.projectId,
+          projectName: project.projectName,
+          parentId: submission._id.toString(),
+        }));
+      });
+  
       const finalData = studentId
         ? flattened.filter((item) => item.studentId === studentId)
         : flattened;
-
+  
       setFlatSubmissions(finalData);
     } catch (err) {
       console.error("Failed to fetch submissions", err);
@@ -127,13 +123,18 @@ console.log('Fetched submissions with IDs:',
         );
         const fetchedProjects = res.data.projects;
         setProjects(fetchedProjects);
-        await fetchSubmissions("", "", fetchedProjects);
+        
+        // Get project ID from navigation state if available
+        const initialProjectId = location.state?.selectedProjectId || "";
+        setSelectedProjectId(initialProjectId);
+        
+        await fetchSubmissions(initialProjectId, "", fetchedProjects);
       } catch (err) {
         console.error("Init error", err);
       }
     };
     init();
-  }, []);
+  }, [location.state]);
 
   const handleProjectChange = (e) => {
     const value = e.target.value;
