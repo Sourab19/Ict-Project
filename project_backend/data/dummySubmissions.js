@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const getDummySubmissions = (projectId) => [
   {
-    studentName: "Abishek",
+    studentName: "Student 1",
     studentId: "S1",
     projectId,
     submissions: [
@@ -14,7 +14,7 @@ const getDummySubmissions = (projectId) => [
     ]
   },
   {
-    studentName: "Abhaya",
+    studentName: "Student 2",
     studentId: "S2",
     projectId,
     submissions: [
