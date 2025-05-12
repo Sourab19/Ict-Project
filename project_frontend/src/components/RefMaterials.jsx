@@ -17,6 +17,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import img from "../images/img7.avif";
 import axiosInstance from "../axiosInterceptor";
+import { useNavigate } from "react-router-dom";
 const navigate = useNavigate();
 
 // Reusable card for each project
