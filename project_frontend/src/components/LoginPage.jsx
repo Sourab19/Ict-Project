@@ -37,9 +37,9 @@ const LoginPage = () => {
       .post("http://localhost:3000/mentor/login", loginData)
       .then((res) => {
         alert(res.data.message);
-        const { role, mentorId, token } = res.data; 
+        const { role, mentorId, token } = res.data;
         if (token) {
-          sessionStorage.setItem("token", token); 
+          sessionStorage.setItem("token", token);
         }
 
         if (role === "admin") {
@@ -95,6 +95,11 @@ const LoginPage = () => {
             marginTop: "60%",
             textShadow: "2px 2px 6px rgba(0,0,0,0.6)",
             fontSize: { xs: "1.5rem", sm: "2rem", md: "2.6rem" },
+            display: {
+              xs: "none",
+              sm: "none",
+              md: "block",
+            },
           }}
         >
           Build Your Future with ICT Academy
