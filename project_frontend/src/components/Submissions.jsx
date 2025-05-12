@@ -26,6 +26,7 @@ import {
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import img from "../images/img5.avif";
+import axiosInstance from "../axiosInterceptor";
 
 const Submissions = () => {
   const location = useLocation();
@@ -46,8 +47,8 @@ const Submissions = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:3000/mentor/${mentorId}`,
+      const res = await axiosInstance.get(
+        `https://ict-project-hazel.vercel.app/mentor/${mentorId}`,
         authHeader
       );
       setProjects(res.data.projects);
@@ -66,8 +67,8 @@ const Submissions = () => {
       if (mentorId) queryParams.append("mentorId", mentorId);
       if (projectId) queryParams.append("projectId", projectId);
 
-      const res = await axios.get(
-        `http://localhost:3000/mentor/submission?${queryParams.toString()}`,
+      const res = await axiosInstance.get(
+        `https://ict-project-hazel.vercel.app/mentor/submission?${queryParams.toString()}`,
         authHeader
       );
 
@@ -126,8 +127,8 @@ const Submissions = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/mentor/${mentorId}`,
+        const res = await axiosInstance.get(
+          `https://ict-project-hazel.vercel.app/mentor/${mentorId}`,
           authHeader
         );
         const fetchedProjects = res.data.projects;
@@ -164,8 +165,8 @@ const Submissions = () => {
   const handleEditSave = async () => {
     const { studentId, _id, week, marks, comment, status } = editSubmission; // Changed from parentId to studentId
     try {
-      await axios.put(
-        `http://localhost:3000/mentor/submission/${studentId}/${_id}`,
+      await axiosInstance.put(
+        `/mentor/submission/${studentId}/${_id}`,
         { week, marks, comment, status },
         authHeader
       );
@@ -201,8 +202,8 @@ const Submissions = () => {
         parentId: submissionToDelete.parentId,
       });
 
-      const response = await axios.delete(
-        `http://localhost:3000/mentor/submission/${studentId}/${submissionId}`,
+      const response = await axiosInstance.delete(
+        `/mentor/submission/${studentId}/${submissionId}`,
         authHeader
       );
 

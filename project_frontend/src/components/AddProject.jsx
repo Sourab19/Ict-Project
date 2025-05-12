@@ -32,12 +32,12 @@ const AddProject = () => {
 
     try {
       if (isEditMode) {
-        await axiosInstance.put(`http://localhost:3000/project/edit/${projectToEdit._id}`, formData, {
+        await axiosInstance.put(`/project/edit/${projectToEdit._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Project updated successfully");
       } else {
-        await axiosInstance.post(`http://localhost:3000/project`, formData, {
+        await axiosInstance.post(`/project`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Project added successfully");

@@ -23,7 +23,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axiosInstance.get("http://localhost:3000/project/get");
+      const res = await axiosInstance.get("https://ict-project-hazel.vercel.app/project/get");
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -32,7 +32,7 @@ const Projects = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axiosInstance.delete(`http://localhost:3000/project/delete/${id}`);
+      await axiosInstance.delete(`/project/delete/${id}`);
       fetchProjects();
     } catch (err) {
       console.error("Error deleting project:", err);

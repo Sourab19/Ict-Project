@@ -25,7 +25,7 @@ const Mentors = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axiosInstance.get("http://localhost:3000/mentor");
+      const res = await axiosInstance.get("https://ict-project-hazel.vercel.app/mentor");
       setMentors(res.data);
     } catch (err) {
       console.error("Error fetching mentors:", err);
@@ -38,7 +38,7 @@ const Mentors = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axiosInstance.delete(`http://localhost:3000/mentor/delete/${id}`);
+      await axiosInstance.delete(`/mentor/delete/${id}`);
       fetchMentors();
     } catch (err) {
       console.error("Error deleting mentor:", err);
@@ -51,7 +51,7 @@ const Mentors = () => {
 
   const handleUpdate = async () => {
     try {
-      await axiosInstance.put(`http://localhost:3000/mentor/update/${editingId}`, {
+      await axiosInstance.put(`/mentor/update/${editingId}`, {
         ...formData,
         projects: formData.projects.split(",").map((p) => ({
           projectName: p.trim(),

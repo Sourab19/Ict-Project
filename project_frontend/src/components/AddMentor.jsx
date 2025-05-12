@@ -37,7 +37,7 @@ const AddMentor = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axiosInstance.get("http://localhost:3000/project/get");
+        const res = await axiosInstance.get("https://ict-project-hazel.vercel.app/project/get");
 
         let allProjects = res.data;
 
@@ -77,12 +77,12 @@ const AddMentor = () => {
     try {
       if (mentorToEdit?._id) {
         await axiosInstance.put(
-          `http://localhost:3000/mentor/update/${mentorToEdit._id}`,
+          `/mentor/update/${mentorToEdit._id}`,
           formData
         );
         alert("Mentor updated successfully");
       } else {
-        await axiosInstance.post("http://localhost:3000/mentor/add", formData);
+        await axiosInstance.post("/mentor/add", formData);
         alert("Added Mentor successfully");
       }
 

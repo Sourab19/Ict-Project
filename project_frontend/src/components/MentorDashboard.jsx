@@ -16,7 +16,7 @@ const MentorDashboard = () => {
   useEffect(() => {
     if (mentorId) {
       axiosInstance
-        .get(`http://localhost:3000/mentor/${mentorId}`)
+        .get(`https://ict-project-hazel.vercel.app/mentor/${mentorId}`)
         .then((res) => {
           setMentor(res.data);
         })
