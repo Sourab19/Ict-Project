@@ -39,7 +39,7 @@ const ProjectCard = ({ project }) => {
 
     try {
       const response = await axiosInstance.post(
-        `https://ict-project-hazel.vercel.app/project/upload/${project._id}`,
+        `/project/upload/${project._id}`,
         formData,
         {
           headers: {
@@ -61,7 +61,7 @@ const ProjectCard = ({ project }) => {
 
   const handleDeleteFile = async (projectId, fileUrl) => {
     try {
-      await axiosInstance.delete(`https://ict-project-hazel.vercel.app/project/${projectId}/file`, {
+      await axiosInstance.delete(`/project/${projectId}/file`, {
         data: { fileUrl },
       });
       alert("File deleted successfully!");
