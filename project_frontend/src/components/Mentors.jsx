@@ -145,7 +145,7 @@ const Mentors = () => {
                   color: "#fff", // Makes text visible over image
                   position: "relative",
                   overflow: "hidden",
-                  marginLeft:'80px',
+                  marginLeft:'140px',
                   height:'380px'
                 }}
               >
