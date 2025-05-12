@@ -9,7 +9,7 @@ app.use(
   cors({
     origin: ['https://ict-project-2.vercel.app'],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ['Content-Type', 'Authorization','token'],
   })
 );
@@ -29,10 +29,6 @@ app.get("/", (req, res) => {
 });
 
 
-if (require.main === module) {
-  app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
-  });
-}
-
-module.exports = app;
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
+});

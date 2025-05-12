@@ -17,6 +17,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import img from "../images/img7.avif";
 import axiosInstance from "../axiosInterceptor";
+const navigate = useNavigate();
 
 // Reusable card for each project
 const ProjectCard = ({ project }) => {
@@ -50,7 +51,7 @@ const ProjectCard = ({ project }) => {
 
       console.log("File uploaded successfully:", response.data);
       setFile(null);
-      window.location.reload();
+      navigate(0);
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
@@ -65,7 +66,7 @@ const ProjectCard = ({ project }) => {
         data: { fileUrl },
       });
       alert("File deleted successfully!");
-      window.location.reload(); // Refresh to show updated list
+      navigate(0); // Refresh to show updated list
     } catch (error) {
       console.error("Error deleting file:", error);
       alert("Failed to delete file.");
