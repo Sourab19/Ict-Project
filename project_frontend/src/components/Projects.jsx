@@ -123,7 +123,7 @@ const Projects = () => {
                 >
                   <Card
                     sx={{
-                      marginLeft: "140px",
+                      marginLeft: "80px",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
