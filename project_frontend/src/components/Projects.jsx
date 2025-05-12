@@ -23,7 +23,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axiosInstance.get("https://ict-project-hazel.vercel.app/project/get");
+      const res = await axiosInstance.get("https://ict-project-beta.vercel.app/project/get");
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);

@@ -48,7 +48,7 @@ const Submissions = () => {
   const fetchProjects = async () => {
     try {
       const res = await axiosInstance.get(
-        `https://ict-project-hazel.vercel.app/mentor/${mentorId}`,
+        `https://ict-project-beta.vercel.app/mentor/${mentorId}`,
         authHeader
       );
       setProjects(res.data.projects);
@@ -68,7 +68,7 @@ const Submissions = () => {
       if (projectId) queryParams.append("projectId", projectId);
 
       const res = await axiosInstance.get(
-        `https://ict-project-hazel.vercel.app/mentor/submission?${queryParams.toString()}`,
+        `https://ict-project-beta.vercel.app/mentor/submission?${queryParams.toString()}`,
         authHeader
       );
 
@@ -128,7 +128,7 @@ const Submissions = () => {
     const init = async () => {
       try {
         const res = await axiosInstance.get(
-          `https://ict-project-hazel.vercel.app/mentor/${mentorId}`,
+          `https://ict-project-beta.vercel.app/mentor/${mentorId}`,
           authHeader
         );
         const fetchedProjects = res.data.projects;

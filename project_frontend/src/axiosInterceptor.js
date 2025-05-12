@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: 'https://ict-project-hazel.vercel.app/'
+  baseURL: 'https://ict-project-beta.vercel.app/'
 });
 
 axiosInstance.interceptors.request.use(function (config) {

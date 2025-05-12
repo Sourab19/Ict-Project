@@ -28,7 +28,7 @@ const MentorProjects = () => {
   useEffect(() => {
     if (mentorId) {
       axiosInstance
-        .get(`https://ict-project-hazel.vercel.app/mentor/${mentorId}`)
+        .get(`https://ict-project-beta.vercel.app/mentor/${mentorId}`)
         .then(async (res) => {
           const mentorData = res.data;
           setMentor(mentorData);
@@ -37,7 +37,7 @@ const MentorProjects = () => {
           for (const project of mentorData.projects) {
             try {
               const subRes = await axiosInstance.get(
-                `https://ict-project-hazel.vercel.app/submissions/byProject/${project._id}`
+                `https://ict-project-beta.vercel.app/submissions/byProject/${project._id}`
               );
               submissionsMap[project._id] = subRes.data;
             } catch (err) {

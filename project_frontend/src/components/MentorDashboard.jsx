@@ -16,7 +16,7 @@ const MentorDashboard = () => {
   useEffect(() => {
     if (mentorId) {
       axiosInstance
-        .get(`https://ict-project-hazel.vercel.app/mentor/${mentorId}`)
+        .get(`https://ict-project-beta.vercel.app/mentor/${mentorId}`)
         .then((res) => {
           setMentor(res.data);
         })

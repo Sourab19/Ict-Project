@@ -25,7 +25,7 @@ const Mentors = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axiosInstance.get("https://ict-project-hazel.vercel.app/mentor");
+      const res = await axiosInstance.get("https://ict-project-beta.vercel.app/mentor");
       setMentors(res.data);
     } catch (err) {
       console.error("Error fetching mentors:", err);

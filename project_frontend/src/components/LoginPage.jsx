@@ -34,7 +34,7 @@ const LoginPage = () => {
     const loginData = { email, password };
 
     axios
-      .post("https://ict-project-hazel.vercel.app/mentor/login", loginData)
+      .post("https://ict-project-beta.vercel.app/mentor/login", loginData)
       .then((res) => {
         alert(res.data.message);
         const { role, mentorId, token } = res.data;
