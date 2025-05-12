@@ -17,14 +17,12 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import img from "../images/img7.avif";
 import axiosInstance from "../axiosInterceptor";
-import { useNavigate } from "react-router-dom";
-const navigate = useNavigate();
 
-// Reusable card for each project
 const ProjectCard = ({ project }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [files, setFiles] = useState(project.srsFile || []); // updated local state
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -52,9 +50,13 @@ const ProjectCard = ({ project }) => {
 
       console.log("File uploaded successfully:", response.data);
       setFile(null);
-      navigate(0);
+
+      // ✅ Update files state with newly uploaded file URL
+      const uploadedFileUrl = response.data.fileUrl; // adjust this if backend returns a different key
+      setFiles((prev) => [...prev, uploadedFileUrl]);
     } catch (error) {
       console.error("Error uploading file:", error);
+      alert("Upload failed.");
     } finally {
       setLoading(false);
       setUploading(false);
@@ -67,7 +69,9 @@ const ProjectCard = ({ project }) => {
         data: { fileUrl },
       });
       alert("File deleted successfully!");
-      navigate(0); // Refresh to show updated list
+
+      // ✅ Remove deleted file from state
+      setFiles((prev) => prev.filter((url) => url !== fileUrl));
     } catch (error) {
       console.error("Error deleting file:", error);
       alert("Failed to delete file.");
@@ -88,8 +92,8 @@ const ProjectCard = ({ project }) => {
           Files:
         </Typography>
         <List dense>
-          {Array.isArray(project.srsFile) && project.srsFile.length > 0 ? (
-            project.srsFile.map((url, index) => (
+          {Array.isArray(files) && files.length > 0 ? (
+            files.map((url, index) => (
               <ListItem key={index}>
                 <InsertDriveFileIcon sx={{ mr: 1 }} />
                 <ListItemText
